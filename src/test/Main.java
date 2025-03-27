@@ -12,22 +12,22 @@ import primitives.*;
  */
 public final class Main {
    /** A point for tests at (1,2,3) */
-   private static final Point  P1          = new Point(1, 2, 3);
+   private static final Point  P1          = new Point(1.0, 2.0, 3.0);
    /** A point for tests at (2,4,6) */
-   private static final Point  P2          = new Point(2, 4, 6);
+   private static final Point  P2          = new Point(2.0, 4.0, 6.0);
    /** A point for tests at (2,4,5) */
-   private static final Point  P3          = new Point(2, 4, 5);
+   private static final Point  P3          = new Point(2.0, 4.0, 5.0);
 
    /** A vector for tests to (1,2,3) */
-   private static final Vector V1          = new Vector(1, 2, 3);
+   private static final Vector V1          = new Vector(1.0, 2.0, 3.0);
    /** A vector for tests to (-1,-2,-3) (opposite to V1) */
-   private static final Vector V1_OPPOSITE = new Vector(-1, -2, -3);
+   private static final Vector V1_OPPOSITE = new Vector(-1.0, -2.0, -3.0);
    /** A vector for tests to (-2,-4,-6) */
-   private static final Vector V2          = new Vector(-2, -4, -6);
+   private static final Vector V2          = new Vector(-2.0, -4.0, -6.0);
    /** A vector for tests to (0,3,-2) */
-   private static final Vector V3          = new Vector(0, 3, -2);
+   private static final Vector V3          = new Vector(0.0, 3.0, -2.0);
    /** A vector for tests to (1,2,2) */
-   private static final Vector V4          = new Vector(1, 2, 2);
+   private static final Vector V4          = new Vector(1.0, 2.0, 2.0);
 
    /**
     * Main program to tests initial functionality of the 1st stage
@@ -82,7 +82,7 @@ public final class Main {
    private static void vectorSingleOperationTests() {
       // test zero vector =====================================================
       try {
-         new Vector(0, 0, 0);
+         new Vector(0.0, 0.0, 0.0);
          new Vector(Double3.ZERO);
          out.println("ERROR: zero vector does not throw an exception");
       } catch (IllegalArgumentException ignore) {} catch (Exception ignore) {
@@ -96,7 +96,7 @@ public final class Main {
          out.println("ERROR: length() wrong value");
 
       // test vector normalization vs vector length and cross-product
-      Vector v = new Vector(1, 2, 3);
+      Vector v = new Vector(1.0, 2.0, 3.0);
       Vector u = v.normalize();
       if (!isZero(u.length() - 1))
          out.println("ERROR: the normalized vector is not a unit vector");
@@ -127,7 +127,7 @@ public final class Main {
       }
       if (!V1.add(V2).equals(V1_OPPOSITE))
          out.println("ERROR: Vector + Vector does not work correctly");
-      if (!V1.subtract(V2).equals(new Vector(3, 6, 9)))
+      if (!V1.subtract(V2).equals(new Vector( 3.0, 6.0, 9.0)))
          out.println("ERROR: Vector + Vector does not work correctly");
 
       // test Dot-Product

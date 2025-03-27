@@ -2,7 +2,7 @@ package primitives;
 
 public class Point {
     protected final Double3 xyz;
-    public static final ZERO = new Point(0, 0, 0);
+    public static final Point ZERO = new Point(0.0, 0.0, 0.0);
 
     public Point(Double x, Double y, Double z) {
         this.xyz = new Double3(x, y, z);
