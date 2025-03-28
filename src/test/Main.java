@@ -2,11 +2,6 @@
  * Authors:
  * - Zohar Levi - 329243117
  * - Shira Levi
- *
- * Project: Example Java Code
- * Description: This file demonstrates Java code styling and structure.
- *
- * Date: March 2025
  */
 
 
