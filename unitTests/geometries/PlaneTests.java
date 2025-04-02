@@ -11,8 +11,8 @@ class PlaneTests {
 
     @Test
     void testConstructor() {
-        // Test constructor with three points
-
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: Test constructor with three points, the normal is orthogonal to the plane and is normalised
         Point point1 = new Point(0.0, 0.0, 2.0);
         Point point2 = new Point(0.0, 3.0, 0.0);
         Point point3 = new Point(6.0, 0.0, 0.0);
