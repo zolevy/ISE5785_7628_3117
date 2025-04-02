@@ -51,4 +51,9 @@ public class Plane extends Geometry {
     public Vector getNormal(Point point) {
         return this.normal;
     }
+
+    //gets
+    public Vector getNormal() {
+        return this.normal;
+    }
 }
