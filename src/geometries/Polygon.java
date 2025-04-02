@@ -1,27 +1,37 @@
 package geometries;
+
 import primitives.*;
 
 import java.util.List;
+
 import static primitives.Util.*;
 
 /**
  * Polygon class represents two-dimensional polygon in 3D Cartesian coordinate
  * system
+ *
  * @author Dan
  */
 public class Polygon extends Geometry {
-    /** List of polygon's vertices */
+    /**
+     * List of polygon's vertices
+     */
     protected final List<Point> vertices;
-    /** Associated plane in which the polygon lays */
-    protected final Plane       plane;
-    /** The size of the polygon - the amount of the vertices in the polygon */
-    private final int           size;
+    /**
+     * Associated plane in which the polygon lays
+     */
+    protected final Plane plane;
+    /**
+     * The size of the polygon - the amount of the vertices in the polygon
+     */
+    private final int size;
 
     /**
      * Polygon constructor based on vertices list. The list must be ordered by edge
      * path. The polygon must be convex.
-     * @param  vertices                 list of vertices according to their order by
-     *                                  edge path
+     *
+     * @param vertices list of vertices according to their order by
+     *                 edge path
      * @throws IllegalArgumentException in any case of illegal combination of
      *                                  vertices:
      *                                  <ul>
@@ -42,19 +52,19 @@ public class Polygon extends Geometry {
         if (vertices.length < 3)
             throw new IllegalArgumentException("A polygon can't have less than 3 vertices");
         this.vertices = List.of(vertices);
-        size          = vertices.length;
+        size = vertices.length;
 
         // Generate the plane according to the first three vertices and associate the
         // polygon with this plane.
         // The plane holds the invariant normal (orthogonal unit) vector to the polygon
-        plane         = new Plane(vertices[0], vertices[1], vertices[2]);
+        plane = new Plane(vertices[0], vertices[1], vertices[2]);
         if (size == 3) return; // no need for more tests for a Triangle
 
-        Vector  n        = plane.getNormal(vertices[0]);
+        Vector n = plane.getNormal(vertices[0]);
         // Subtracting any subsequent points will throw an IllegalArgumentException
         // because of Zero Vector if they are in the same point
-        Vector  edge1    = vertices[size - 1].subtract(vertices[size - 2]);
-        Vector  edge2    = vertices[0].subtract(vertices[size - 1]);
+        Vector edge1 = vertices[size - 1].subtract(vertices[size - 2]);
+        Vector edge2 = vertices[0].subtract(vertices[size - 1]);
 
         // Cross Product of any subsequent edges will throw an IllegalArgumentException
         // because of Zero Vector if they connect three vertices that lay in the same
@@ -77,6 +87,8 @@ public class Polygon extends Geometry {
     }
 
     @Override
-    public Vector getNormal(Point point) { return plane.getNormal(point); }
+    public Vector getNormal(Point point) {
+        return plane.getNormal(point);
+    }
 
 }

@@ -11,6 +11,7 @@ import static java.lang.System.out;
 
 import static primitives.Util.isZero;
 
+import geometries.Triangle;
 import primitives.*;
 
 /**
@@ -153,6 +154,9 @@ public final class Main {
          out.println("ERROR: crossProduct() wrong result length");
       if (!isZero(vr.dotProduct(V1)) || !isZero(vr.dotProduct(V3)))
          out.println("ERROR: crossProduct() result is not orthogonal to its operands");
+
+
+      Triangle t = new Triangle(P1, P2, P3);
    }
 
 }
