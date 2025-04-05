@@ -21,13 +21,16 @@ public class Plane extends Geometry {
     /**
      * Constructs a plane defined by three points.
      *
-     * @param q1 the first point on the plane
-     * @param q2 the second point on the plane
-     * @param q3 the third point on the plane
+     * @param point1 the first point on the plane
+     * @param point2 the second point on the plane
+     * @param point3 the third point on the plane
      */
-    public Plane(Point q1, Point q2, Point q3) {
+    public Plane(Point point1, Point point2, Point point3) {
         this.q = q1;
-        this.normal = null; // Normal calculation should be implemented here
+        //normal calculation
+        Vector v1 = point2.subtract(point1);
+        Vector v2 = point3.subtract(point1);
+        this.normal = v1.crossProduct(v2).normalize();
     }
 
     /**

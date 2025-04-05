@@ -15,6 +15,14 @@ public class Ray {
      */
     private final Vector direction;
 
+    public Point getHead() {
+        return head;
+    }
+
+    public Vector getDirection() {
+        return direction;
+    }
+
     /**
      * Constructs a ray with a given head point and direction vector.
      * The direction vector is normalized upon initialization.
