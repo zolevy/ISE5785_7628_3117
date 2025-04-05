@@ -22,7 +22,7 @@ class PlaneTests {
         Vector v3 = p3.subtract(p2);
         Vector normal = v1.crossProduct(v2).normalize();
 
-        assertEquals(1, plane.getNormal().length(), "Plane normal is not normalized"); //LoD?
+        assertEquals(1, plane.getNormal().length(), "Plane normal is not normalized");
 
         int perpendicularCount = 0;
         if (plane.getNormal().dotProduct(v1) == 0) perpendicularCount++;
@@ -33,25 +33,51 @@ class PlaneTests {
         }
 
         // =============== Boundary Values Tests ==================
+
         // TC02: Two points coincide (p1 and p2)
-        assertThrows(IllegalArgumentException.class, () -> new Plane(p1, p1, p3),
-                "Constructor does not throw an exception when two points coincide");
+        try {
+            new Plane(p1, p1, p3);
+            fail("Constructor did not throw an exception when two points coincide (p1, p1, p3)");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
 
         // TC03: Two points coincide (p1 and p3)
-        assertThrows(IllegalArgumentException.class, () -> new Plane(p1, p2, p1),
-                "Constructor does not throw an exception when two points coincide");
+        try {
+            new Plane(p1, p2, p1);
+            fail("Constructor did not throw an exception when two points coincide (p1, p2, p1)");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
 
         // TC04: Two points coincide (p2 and p3)
-        assertThrows(IllegalArgumentException.class, () -> new Plane(p1, p2, p2),
-                "Constructor does not throw an exception when two points coincide");
+        try {
+            new Plane(p1, p2, p2);
+            fail("Constructor did not throw an exception when two points coincide (p1, p2, p2)");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
 
         // TC05: All points coincide
-        assertThrows(IllegalArgumentException.class, () -> new Plane(p1, p1, p1),
-                "Constructor does not throw an exception when all points coincide");
+        try {
+            new Plane(p1, p1, p1);
+            fail("Constructor did not throw an exception when all points coincide (p1, p1, p1)");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
 
-        // TC06: All points are collinear (on the same line)
-        assertThrows(IllegalArgumentException.class, () -> new Plane(new Point(0.0, 0.0, 0.0), new Point(2.0, 2.0, 2.0), new Point(4.0, 4.0, 4.0)),
-                "Constructor does not throw an exception when all points are collinear");
+        // TC06: All points are collinear
+        try {
+            new Plane(
+                    new Point(0.0, 0.0, 0.0),
+                    new Point(2.0, 2.0, 2.0),
+                    new Point(4.0, 4.0, 4.0)
+            );
+            fail("Constructor did not throw an exception when all points are collinear");
+        }
+        catch (IllegalArgumentException e) {
+            // expected
+        }
     }
 
     @Test
@@ -63,8 +89,6 @@ class PlaneTests {
         Point p2 = new Point(3.0, 4.0, 5.0);
         Point p3 = new Point(6.0, 7.0, 8.0);
         Plane plane = new Plane(p1, p2, p3);
-        // Ensure no exceptions when getting the normal
-        assertDoesNotThrow(() -> plane.getNormal(p1), "Exception thrown while getting normal");
         // Generate the test result
         Vector result = plane.getNormal(p1);
         // Ensure |result| = 1 (normal is a unit vector)

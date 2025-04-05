@@ -15,8 +15,8 @@ class TriangleTest {
         Point p2 = new Point(3.0, 4.0, 5.0);
         Point p3 = new Point(6.0, 7.0, 8.0);
         Trinagle triangle = new Triangle(p1, p2, p3);
-        // Ensure no exceptions when getting the normal
-        assertDoesNotThrow(() -> triangle.getNormal(p1), "Exception thrown while getting normal");
+        //(maybe possible to keep DRY)
+
         // Generate the test result
         Vector result = triangle.getNormal(p1);
         // Ensure |result| = 1 (normal is a unit vector)
@@ -28,9 +28,9 @@ class TriangleTest {
         // Check orthogonality with edge1
         assertEquals(0.0, result.dotProduct(edge1), DELTA, "Normal is not orthogonal to all edges");
         // Check orthogonality with edge2
-        assertEquals(0.0, result.dotProduct(edge2), DELTA, "Normal is not orthogonal to the plane");
+        assertEquals(0.0, result.dotProduct(edge2), DELTA, "Normal is not orthogonal to all edges");
         // Check orthogonality with edge3
-        assertEquals(0.0, result.dotProduct(edge3), DELTA, "Normal is not orthogonal to the plane");
+        assertEquals(0.0, result.dotProduct(edge3), DELTA, "Normal is not orthogonal to all edges");
     }
 
 }

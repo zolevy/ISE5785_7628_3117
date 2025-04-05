@@ -17,9 +17,6 @@ class TubeTest {
 
         Point point = new Point(2.0, 0.0, 5.0); // A point on the tube surface
 
-        // Ensure no exceptions when getting the normal
-        assertDoesNotThrow(() -> tube.getNormal(point), "Exception thrown while getting normal for a regular point");
-
         Vector normal = tube.getNormal(point);
         // Ensure |normal| = 1 (unit vector)
         assertEquals(1.0, normal.length(), DELTA, "Tube's normal is not a unit vector");
@@ -29,7 +26,6 @@ class TubeTest {
         // =============== Boundary Tests ================
         // TC02: Test normal calculation for a point "in front" of the tube's axis
         Point boundaryPoint = new Point(0.0, 2.0, 0.0); // Directly in front of the tube's axis
-        assertDoesNotThrow(() -> tube.getNormal(boundaryPoint), "Exception thrown while getting normal for boundary point");
         Vector boundaryNormal = tube.getNormal(boundaryPoint);
         assertEquals(new Vector(0.0, 1.0, 0.0), boundaryNormal, "Tube's normal at boundary point is incorrect");
     }

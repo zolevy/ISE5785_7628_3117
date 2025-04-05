@@ -23,9 +23,22 @@ class PointTests {
 
         // =============== Boundary Values Tests ==================
         // TC01: Subtraction of a point with itself should result in the zero vector
-        Point p3 = new Point(0.0, 0.0, 0.0);
-        result = p3.subtract(p3);
-        assertEquals(Vector.ZERO, result, DELTA, "Subtraction of the same points should result in zero vector");
+        boolean flag = false;
+        try {
+            result=p1.subtract(p1);
+        } catch (Exception e) {
+            flag = true;
+        }
+        assertEquals(true, flag, "Subtraction of a point with the same point should result in an error - zero vector cannot be created");
+
+        // TC02: Subtraction of a point with zero point should result in the original vector
+        Point pZero = new point (0.0,0.0,0.0);
+        result = p1.subtract(pZero);
+        assertEquals(p1, result, DELTA, "Subtraction of a point with zero point should result in the original vector");
+        // TC03: Subtraction of a point from zero point should result in the opposite vector
+        result = pZero.subtract(p1);
+        Vector oppositeP1 = new Vector (-1.0, -2.0, -3.0);
+        assertEquals(oppositeP1, result, DELTA, "Subtraction of a point from zero point should result in the opposite vector");
     }
 
     /**
