@@ -22,7 +22,7 @@ class TubeTest {
      */
     @Test
     void testGetNormal() {
-        // ============ Equivalence Partitions Tests ==============
+        // ============ Equivalence Partitions Tests =============
         // TC01: Test normal calculation for a regular point on the tube surface
 
         Ray axisRay = new Ray(new Point(0.0, 0.0, 0.0), new Vector(0.0, 0.0, 1.0)); // Tube along Z-axis
