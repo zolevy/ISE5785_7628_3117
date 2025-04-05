@@ -20,10 +20,17 @@ public class Plane extends Geometry {
 
     /**
      * Constructs a plane defined by three points.
+     * <p>
+     * The normal vector is calculated as the normalized cross product of the vectors
+     * from the first point to the second and third points.
+     * <p>
+     * If the three points are collinear or coincide, the cross product will be zero,
+     * and a {@link IllegalArgumentException} may be thrown when trying to normalize it.
      *
      * @param point1 the first point on the plane
      * @param point2 the second point on the plane
      * @param point3 the third point on the plane
+     * @throws IllegalArgumentException if the points are collinear or not distinct
      */
     public Plane(Point point1, Point point2, Point point3) {
         //maybe check if it's possible to make a plane from these three points
@@ -56,7 +63,11 @@ public class Plane extends Geometry {
         return this.normal;
     }
 
-    //gets
+    /**
+     * Returns the normal vector to the plane.
+     *
+     * @return the normalized normal vector of the plane
+     */
     public Vector getNormal() {
         return this.normal;
     }

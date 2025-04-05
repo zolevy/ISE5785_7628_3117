@@ -4,12 +4,26 @@ import primitives.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+/**
+ * This class contains tests for the Sphere class, specifically for checking the
+ * behavior of the getNormal method to ensure it calculates the correct normal
+ * vectors for points on the surface of the sphere.
+ */
 class SphereTest {
 
-    @org.junit.jupiter.api.Test
-    @Test
+    /**
+     * Delta value for accuracy when comparing the numbers of type 'double' in
+     * assertEquals.
+     */
     private static final double DELTA = 0.000001;
+
+    /**
+     * Test method for {@link geometries.Sphere#getNormal(primitives.Point)}.
+     * This test verifies that the normal vector of the sphere is calculated correctly
+     * at different points on the surface of the sphere. It ensures that the normal
+     * is a unit vector and points correctly from the center to the point on the surface.
+     */
+    @org.junit.jupiter.api.Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Test normal calculation for valid points on the sphere surface
@@ -21,7 +35,6 @@ class SphereTest {
         Point point1 = new Point(5.0, 0.0, 0.0); // Point on the x-axis
         Point point2 = new Point(0.0, 5.0, 0.0); // Point on the y-axis
         Point point3 = new Point(0.0, 0.0, 5.0); // Point on the z-axis
-
 
         // Generate the test results
         Vector result1 = sphere.getNormal(point1);
@@ -38,5 +51,4 @@ class SphereTest {
         assertEquals(point2.subtract(center).normalize(), result2, "Normal at axis-y is incorrect");
         assertEquals(point3.subtract(center).normalize(), result3, "Normal at axis-z is incorrect");
     }
-
 }

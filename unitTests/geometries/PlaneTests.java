@@ -4,9 +4,18 @@ import primitives.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import javax.swing.*;
+/**
+ * Test class for the Plane class, specifically the constructor and getNormal method.
+ * It includes tests for creating a plane with non-collinear points and for ensuring that the normal is correct.
+ */
 class PlaneTests {
 
+    private static final double DELTA = 0.00001; // Tolerance for double comparisons
+
+    /**
+     * Tests the constructor of the Plane class.
+     * This test checks various edge cases, including coincident points and collinear points.
+     */
     @Test
     void testConstructor() {
         // ============ Equivalence Partitions Tests ==============
@@ -35,51 +44,29 @@ class PlaneTests {
         // =============== Boundary Values Tests ==================
 
         // TC02: Two points coincide (p1 and p2)
-        try {
-            new Plane(p1, p1, p3);
-            fail("Constructor did not throw an exception when two points coincide (p1, p1, p3)");
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
+        assertThrows(IllegalArgumentException.class, () -> new Plane(p1, p1, p3), "Constructor did not throw an exception when two points coincide (p1, p1, p3)");
 
         // TC03: Two points coincide (p1 and p3)
-        try {
-            new Plane(p1, p2, p1);
-            fail("Constructor did not throw an exception when two points coincide (p1, p2, p1)");
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
+        assertThrows(IllegalArgumentException.class, () -> new Plane(p1, p2, p1), "Constructor did not throw an exception when two points coincide (p1, p2, p1)");
 
         // TC04: Two points coincide (p2 and p3)
-        try {
-            new Plane(p1, p2, p2);
-            fail("Constructor did not throw an exception when two points coincide (p1, p2, p2)");
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
+        assertThrows(IllegalArgumentException.class, () -> new Plane(p1, p2, p2), "Constructor did not throw an exception when two points coincide (p1, p2, p2)");
 
         // TC05: All points coincide
-        try {
-            new Plane(p1, p1, p1);
-            fail("Constructor did not throw an exception when all points coincide (p1, p1, p1)");
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
+        assertThrows(IllegalArgumentException.class, () -> new Plane(p1, p1, p1), "Constructor did not throw an exception when all points coincide (p1, p1, p1)");
 
         // TC06: All points are collinear
-        try {
-            new Plane(
-                    new Point(0.0, 0.0, 0.0),
-                    new Point(2.0, 2.0, 2.0),
-                    new Point(4.0, 4.0, 4.0)
-            );
-            fail("Constructor did not throw an exception when all points are collinear");
-        }
-        catch (IllegalArgumentException e) {
-            // expected
-        }
+        assertThrows(IllegalArgumentException.class, () -> new Plane(
+                new Point(0.0, 0.0, 0.0),
+                new Point(2.0, 2.0, 2.0),
+                new Point(4.0, 4.0, 4.0)
+        ), "Constructor did not throw an exception when all points are collinear");
     }
 
+    /**
+     * Tests the getNormal method of the Plane class.
+     * This test checks if the normal is correctly normalized and orthogonal to all vectors created from the points.
+     */
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============

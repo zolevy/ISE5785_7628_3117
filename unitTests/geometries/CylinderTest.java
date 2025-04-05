@@ -4,9 +4,17 @@ import primitives.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for the Cylinder class, specifically the getNormal method.
+ * It includes tests for various points on the cylinder's surface and bases.
+ */
 class CylinderTest {
     private static final double DELTA = 0.00001; // Tolerance for double comparisons
 
+    /**
+     * Tests the getNormal method of the Cylinder class.
+     * This test covers different cases for points on the lateral surface, the bottom base, and the top base.
+     */
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============

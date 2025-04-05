@@ -7,22 +7,25 @@ import java.util.List;
 import static primitives.Util.*;
 
 /**
- * Polygon class represents two-dimensional polygon in 3D Cartesian coordinate
- * system
+ * Polygon class represents a two-dimensional polygon in 3D Cartesian coordinate system.
+ * A polygon is defined by a list of ordered vertices lying in the same plane,
+ * and must be convex.
  *
- * @author Dan
+ * Based on original implementation by Dan.
  */
 public class Polygon extends Geometry {
     /**
-     * List of polygon's vertices
+     * List of polygon's vertices.
      */
     protected final List<Point> vertices;
+
     /**
-     * Associated plane in which the polygon lays
+     * Associated plane in which the polygon lies.
      */
     protected final Plane plane;
+
     /**
-     * The size of the polygon - the amount of the vertices in the polygon
+     * The number of vertices in the polygon.
      */
     private final int size;
 
@@ -30,22 +33,15 @@ public class Polygon extends Geometry {
      * Polygon constructor based on vertices list. The list must be ordered by edge
      * path. The polygon must be convex.
      *
-     * @param vertices list of vertices according to their order by
-     *                 edge path
-     * @throws IllegalArgumentException in any case of illegal combination of
-     *                                  vertices:
+     * @param vertices list of vertices according to their order by edge path
+     * @throws IllegalArgumentException in any case of illegal combination of vertices:
      *                                  <ul>
-     *                                  <li>Less than 3 vertices</li>
-     *                                  <li>Consequent vertices are in the same
-     *                                  point
-     *                                  <li>The vertices are not in the same
-     *                                  plane</li>
-     *                                  <li>The order of vertices is not according
-     *                                  to edge path</li>
-     *                                  <li>Three consequent vertices lay in the
-     *                                  same line (180&#176; angle between two
-     *                                  consequent edges)
-     *                                  <li>The polygon is concave (not convex)</li>
+     *                                      <li>Less than 3 vertices</li>
+     *                                      <li>Consecutive vertices are at the same point</li>
+     *                                      <li>The vertices are not in the same plane</li>
+     *                                      <li>The order of vertices is not according to edge path</li>
+     *                                      <li>Three consecutive vertices lie in the same line</li>
+     *                                      <li>The polygon is concave (not convex)</li>
      *                                  </ul>
      */
     public Polygon(Point... vertices) {
@@ -61,18 +57,9 @@ public class Polygon extends Geometry {
         if (size == 3) return; // no need for more tests for a Triangle
 
         Vector n = plane.getNormal(vertices[0]);
-        // Subtracting any subsequent points will throw an IllegalArgumentException
-        // because of Zero Vector if they are in the same point
         Vector edge1 = vertices[size - 1].subtract(vertices[size - 2]);
         Vector edge2 = vertices[0].subtract(vertices[size - 1]);
 
-        // Cross Product of any subsequent edges will throw an IllegalArgumentException
-        // because of Zero Vector if they connect three vertices that lay in the same
-        // line.
-        // Generate the direction of the polygon according to the angle between last and
-        // first edge being less than 180deg. It is hold by the sign of its dot product
-        // with the normal. If all the rest consequent edges will generate the same sign
-        // - the polygon is convex ("kamur" in Hebrew).
         boolean positive = edge1.crossProduct(edge2).dotProduct(n) > 0;
         for (var i = 1; i < size; ++i) {
             // Test that the point is in the same plane as calculated originally
@@ -86,9 +73,15 @@ public class Polygon extends Geometry {
         }
     }
 
+    /**
+     * Returns the normal vector to the surface of the polygon at a given point.
+     * The normal is inherited from the plane in which the polygon lies.
+     *
+     * @param point the point on the polygon surface (not used in this implementation)
+     * @return the normal vector to the polygon
+     */
     @Override
     public Vector getNormal(Point point) {
         return plane.getNormal(point);
     }
-
 }
