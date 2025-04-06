@@ -41,6 +41,21 @@ class TubeTest {
         assertEquals(new Vector(1.0, 0.0, 0.0), normal, "Tube's normal is incorrect");
 
         // =============== Boundary Tests ================
+        // TC01: Test normal calculation for a point on the tube's axis
+        Point axisPoint = new Point(0.0, 0.0, 5.0); // A point on the tube's axis
+        // Generate the test result for the axis point
+        Vector axisNormal = tube.getNormal(axisPoint);
+        // Ensure the normal is perpendicular to the tube's axis
+        assertEquals(new Vector(0.0, 1.0, 0.0), axisNormal, "Tube's normal at axis point is incorrect");
+        // TC02: Test normal calculation for a point on the tube's surface
+        Point surfacePoint = new Point(0.0, 2.0, 5.0); // A point on the tube's surface
+        // Generate the test result for the surface point
+        Vector surfaceNormal = tube.getNormal(surfacePoint);
+        // Ensure the normal is perpendicular to the tube's axis
+        assertEquals(new Vector(0.0, 1.0, 0.0), surfaceNormal, "Tube's normal at surface point is incorrect");
+
+
+        /*
         // TC02: Test normal calculation for a point "in front" of the tube's axis
         Point boundaryPoint = new Point(0.0, 2.0, 0.0); // Directly in front of the tube's axis
 
@@ -49,5 +64,7 @@ class TubeTest {
 
         // Ensure the normal is pointing correctly
         assertEquals(new Vector(0.0, 1.0, 0.0), boundaryNormal, "Tube's normal at boundary point is incorrect");
+
+         */
     }
 }

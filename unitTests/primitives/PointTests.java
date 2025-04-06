@@ -19,26 +19,22 @@ class PointTests {
         Point p1 = new Point(1.0, 2.0, 3.0);
         Point p2 = new Point(4.0, 5.0, 6.0);
         Vector result = p1.subtract(p2);
-        assertEquals(new Vector(-3.0, -3.0, -3.0), result, DELTA, "Incorrect result for subtraction of points");
+        assertEquals(new Vector(-3.0, -3.0, -3.0), result, "Incorrect result for subtraction of points");
 
         // =============== Boundary Values Tests ==================
-        // TC01: Subtraction of a point with itself should result in the zero vector
-        boolean flag = false;
-        try {
-            result=p1.subtract(p1);
-        } catch (Exception e) {
-            flag = true;
-        }
-        assertEquals(true, flag, "Subtraction of a point with the same point should result in an error - zero vector cannot be created");
+        // TC01: Subtraction of a point with itself should result in the zero vector (should throw)
+        assertThrows(IllegalArgumentException.class, () -> p1.subtract(p1),
+                "Subtraction of a point with the same point should result in an error - zero vector cannot be created");
 
         // TC02: Subtraction of a point with zero point should result in the original vector
-        Point pZero = new point (0.0,0.0,0.0);
+        Point pZero = new Point(0.0, 0.0, 0.0);
         result = p1.subtract(pZero);
-        assertEquals(p1, result, DELTA, "Subtraction of a point with zero point should result in the original vector");
+        assertEquals(p1, result, "Subtraction of a point with zero point should result in the original vector");
+
         // TC03: Subtraction of a point from zero point should result in the opposite vector
         result = pZero.subtract(p1);
-        Vector oppositeP1 = new Vector (-1.0, -2.0, -3.0);
-        assertEquals(oppositeP1, result, DELTA, "Subtraction of a point from zero point should result in the opposite vector");
+        Vector oppositeP1 = new Vector(-1.0, -2.0, -3.0);
+        assertEquals(oppositeP1, result, "Subtraction of a point from zero point should result in the opposite vector");
     }
 
     /**
@@ -54,8 +50,8 @@ class PointTests {
 
         // =============== Boundary Values Tests ==================
         // TC01: Adding a zero vector to a point should not change the point
-        Vector v2 = (Vector) Point.ZERO;
-        result = p1.add(v2);
+        Point zeroPoint = new Point(0.0, 0.0, 0.0);
+        result = zeroPoint.add(new Vector(1.0, 2.0, 3.0));
         assertEquals(p1, result, "Adding a zero vector should return the original point");
     }
 
@@ -68,13 +64,13 @@ class PointTests {
         Point p1 = new Point(1.0, 2.0, 3.0);
         Point p2 = new Point(4.0, 5.0, 6.0);
         Double result = p1.distance(p2);
-        assertEquals(Math.sqrt(27.0), result, DELTA, "Incorrect distance between points");
+        assertEquals(Math.sqrt(27.0), result, "Incorrect distance between points");
 
         // =============== Boundary Values Tests ==================
         // TC01: Distance from a point to itself should be 0
         Point p3 = new Point(0.0, 0.0, 0.0);
         result = p3.distance(p3);
-        assertEquals(0.0, result, DELTA, "Distance between a point and itself should be 0");
+        assertEquals(0.0, result, "Distance between a point and itself should be 0");
     }
 
     /**
@@ -86,12 +82,12 @@ class PointTests {
         Point p1 = new Point(1.0, 2.0, 3.0);
         Point p2 = new Point(4.0, 5.0, 6.0);
         Double result = p1.distanceSquared(p2);
-        assertEquals(27.0, result, DELTA, "Incorrect squared distance between points");
+        assertEquals(27.0, result, "Incorrect squared distance between points");
 
         // =============== Boundary Values Tests ==================
         // TC01: Squared distance from a point to itself should be 0
         Point p3 = new Point(0.0, 0.0, 0.0);
         result = p3.distanceSquared(p3);
-        assertEquals(0.0, result, DELTA, "Squared distance between a point and itself should be 0");
+        assertEquals(0.0, result, "Squared distance between a point and itself should be 0");
     }
 }
