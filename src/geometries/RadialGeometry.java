@@ -11,6 +11,9 @@ public abstract class RadialGeometry extends Geometry {
      */
     protected final Double radius;
 
+    public Double getRadius() {
+        return radius;
+    }
     /**
      * Constructs a radial geometry with the specified radius.
      *

@@ -2,6 +2,8 @@ package geometries;
 
 import primitives.*;
 
+import java.util.List;
+
 /**
  * Represents a cylinder in 3D space, defined by a central axis and a height.
  * A cylinder is a special case of a tube with a finite height.
@@ -63,4 +65,7 @@ public class Cylinder extends Tube {
                 but it will cause code reuse of computing unnecessary things in super's func */
         return point.subtract(center).normalize();
     }
+
+    public List<Point> findIntersections(Ray ray){return null;}
+
 }

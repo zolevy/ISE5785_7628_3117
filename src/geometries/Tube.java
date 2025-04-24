@@ -2,6 +2,8 @@ package geometries;
 
 import primitives.*;
 
+import java.util.List;
+
 /**
  * Represents an infinite tube in 3D space, defined by a central axis (a ray) and a radius.
  * A tube is like a cylinder without top and bottom caps — it extends infinitely in both directions.
@@ -46,4 +48,7 @@ public class Tube extends RadialGeometry {
         // Compute the normal as the vector from the axis to the given point
         return givenPoint.subtract(center).normalize();
     }
+
+    public List<Point> findIntersections(Ray ray) {return null;}
+
 }

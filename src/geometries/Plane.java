@@ -1,7 +1,12 @@
 package geometries;
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
+
+import static primitives.Util.*;
 
 /**
  * Represents a plane in 3D space, defined by either three points or a point and a normal vector.
@@ -18,6 +23,9 @@ public class Plane extends Geometry {
      */
     private final Vector normal;
 
+    public Point getQ() {
+        return q;
+    }
     /**
      * Constructs a plane defined by three points.
      * <p>
@@ -38,6 +46,12 @@ public class Plane extends Geometry {
         //normal calculation
         Vector v1 = point2.subtract(point1);
         Vector v2 = point3.subtract(point1);
+
+        Vector v1n = v1.normalize();
+        Vector v2n = v2.normalize();
+        if (v1.equals(v2)){
+            throw new IllegalArgumentException("The points are collinear or coincide");
+        }
         this.normal = v1.crossProduct(v2).normalize();
     }
 
@@ -71,4 +85,28 @@ public class Plane extends Geometry {
     public Vector getNormal() {
         return this.normal;
     }
+
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        Point rayOrigin = ray.getHead();
+        Vector rayDirection = ray.getDirection();
+
+        Vector normalToPlane = normal;
+        Point q0 = getQ();
+        double nv = alignZero(normalToPlane.dotProduct(rayDirection));
+
+        // Ray is parallel to the plane or lies in it → no intersection
+        if (isZero(nv)) return null;
+
+        double numerator = alignZero(normalToPlane.dotProduct(q0.subtract(rayOrigin)));
+
+        double t = alignZero(numerator / nv);
+
+        // Intersection is at the ray origin or behind it → discard
+        if (t <= 0) return null;
+
+        Point intersectionPoint = ray.getPoint(t);
+        return List.of(intersectionPoint);
+    }
+
 }

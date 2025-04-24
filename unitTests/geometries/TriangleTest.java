@@ -2,7 +2,10 @@ package geometries;
 
 import org.junit.jupiter.api.Test;
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,4 +57,54 @@ class TriangleTest {
         // Check orthogonality with edge3
         assertEquals(0.0, result.dotProduct(edge3), DELTA, "Normal is not orthogonal to all edges");
     }
+
+
+    /** A point used in some tests */
+    private final Point p001 = new Point(0.0, 0.0, 1.0);
+    /** A point used in some tests */
+    private final Point p100 = new Point(1.0, 0.0, 0.0);
+    /** A vector used in some tests */
+    private final Point p010 = new Point(0.0, 1.0, 0.0);
+    /**
+     * Test method for {@link geometries.Sphere#findIntersections(primitives.Ray)}.
+     */
+    @Test
+    public void testFindIntersections() {
+        Triangle triangle = new Triangle(p001, p100, p010);
+        Vector vm1m2m3 = new Vector(-1.0,-2.0,-3.0);
+
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: Inside triangle (1 points)
+        Point p111 = new Point(1.0, 1.0, 1.0);
+
+        Point interPoint01exp = new Point(0.0 ,  0.3333333333333334, 0.6666666666666667);
+        final var listOfInterPoint01  = List.of(interPoint01exp);
+        final var result01actual = triangle.findIntersections(new Ray(p111, vm1m2m3));
+
+        assertNotNull(result01actual, "Can't be empty list");
+        assertEquals(1, result01actual.size(), "Wrong number of points");
+        assertEquals(listOfInterPoint01, result01actual, "Ray crosses triangle");
+
+        // TC02: Outside against edge (0 points)
+        Point p220 = new Point(2.0,2.0,0.0);
+        assertNull(triangle.findIntersections(new Ray(p220, vm1m2m3)), "Ray's line out of triangle");
+
+        // TC03: Outside against edge (0 points)
+        Point pm13m1 = new Point(-1.0,3.0,-1.0);
+        assertNull(triangle.findIntersections(new Ray(pm13m1, vm1m2m3)), "Ray's line out of triangle");
+
+        // =============== Boundary Values Tests ==================
+        // TC11: On edge (0 points)
+        Point p011 = new Point(0.0, 1.0, 1.0);
+        assertNull(triangle.findIntersections(new Ray(p011, vm1m2m3)), "Ray's line out of triangle");
+
+        // TC12: In vertex (0 points)
+        assertNull(triangle.findIntersections(new Ray(p111, vm1m2m3)), "Ray's line out of triangle");
+
+        // TC21: On edge's continuation (0 points)
+        Point p2m11 = new Point(2.0, -1.0, 1.0);
+        assertNull(triangle.findIntersections(new Ray(p2m11, vm1m2m3)), "Ray's line out of triangle");
+
+    }
+
 }
