@@ -146,7 +146,7 @@ class PlaneTests {
         Point p05050 = new Point(0.5, 0.5, 0.0);
         assertNull(plane.findIntersections(new Ray(p05050, vm1m1m1)), "Ray's line out of plane");
 
-        // TC23: Ray is orthogonal to the plane according to 𝑃0 after the plane (1 points)
+        // TC23: Ray is orthogonal to the plane according to 𝑃0 after the plane (1 point)
         Point interPoint23exp = new Point(0.3333333333333334, 0.3333333333333334, 0.3333333333333334);
         final var listOfInterPoint23  = List.of(interPoint23exp);
         final var result23actual = plane.findIntersections(new Ray(p05050, vm1m1m1));

@@ -11,7 +11,7 @@ public class Geometries implements Intersectable {
 
     public Geometries (){}
 
-     public Geometries (Intersectable... geometries){
+    public Geometries (Intersectable... geometries){
         add(geometries);
      }
 

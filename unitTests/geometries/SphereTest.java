@@ -122,13 +122,13 @@ class SphereTest {
         final Vector v200 = new Vector(2.0, 0.0, 0.0);
         final var result21actual = sphere.findIntersections(new Ray(pm100, v200));
         final Point p000 = new Point(0.0, 0.0, 0.0);
-        final var result21exp = List.of(p200, p000);
+        final var result21exp = List.of(p000, p200);
 
         assertNotNull(result21actual, "Can't be empty list");
         assertEquals(2, result21actual.size(), "Wrong number of points");
         assertEquals(result21exp, result21actual, "Ray crosses sphere through center");
 
-        // TC22: Ray starts at sphere and goes inside (1 points)
+        // TC22: Ray starts at sphere and goes inside (1 point)
         final var result22actual = sphere.findIntersections(new Ray(p000, v200));
         final var result22exp = List.of(p200);
 

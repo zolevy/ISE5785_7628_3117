@@ -23,7 +23,7 @@ class GeometriesTests {
 
 
         // ============ Equivalence Partitions Tests ==============
-        // TC01: Ray's line is outside the sphere (0 points)
+        // TC01: All geometries intersect (3 points)
         List<Point> intersections = geometries.findIntersections(ray);
         geometries.add(new Plane(new Point(0.0, 0.0, 2.0), new Vector(0.0, 0.0, 1.0)));
 
@@ -34,7 +34,7 @@ class GeometriesTests {
 
 
         // =============== Boundary Values Tests ==================
-        // TC12: Ray starts at sphere and goes outside (0 points)
+        // TC11: All geometries but one intersect (3 points)
         geometries.add(new Plane(new Point(0.0, 0.0, -5.0), new Vector(0.0, 0.0, -1.0)));
 
         assertNotNull(intersections);
@@ -46,8 +46,7 @@ class GeometriesTests {
 
         assertNull(geometries2.findIntersections(ray2), "Expected null for an empty geometries list");
 
-        // TC13: Ray starts at sphere and goes inside (1 points)
-        // A sphere far above the ray path
+        // TC13: none of the geometries intersect (0 points)
         geometries2.add(new Sphere(1.0, new Point(0.0, 5.0, 0.0)));
         geometries2.add(new Triangle(new Point(-5.0, -3.0, 1.0), new Point(-6.0, -3.0, 2.0), new Point(-5.5, -2.0, 1.5)));
         geometries2.add(new Plane(new Point(0.0, 0.0, 5.0), new Vector(0.0, 0.0, 1.0)));
@@ -55,7 +54,7 @@ class GeometriesTests {
         assertNull(geometries2.findIntersections(ray2), "Expected null, there are no intersections");
 
 
-        //TC14: Ray starts at sphere and goes inside (1 points)
+        //TC14: only one geometry intersects (1 point)
         geometries2.add(new Plane(new Point(5.0, 0.0, 0.0), new Vector(-1.0, 0.0, 0.0)));
         assertNotNull(geometries2.findIntersections(ray2));
         assertEquals(1, intersections.size(), "Expected one intersection points");

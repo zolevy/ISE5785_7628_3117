@@ -76,10 +76,11 @@ class TriangleTest {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Inside triangle (1 points)
         Point p111 = new Point(1.0, 1.0, 1.0);
+        Point pStart = new Point(2.5, 4.25, 6.25);
+        Point interPointExp = new Point(0.5, 0.25, 0.25);
+        final var listOfInterPoint01 = List.of(interPointExp);
+        final var result01actual = triangle.findIntersections(new Ray(pStart, vm1m2m3));
 
-        Point interPoint01exp = new Point(0.0 ,  0.3333333333333334, 0.6666666666666667);
-        final var listOfInterPoint01  = List.of(interPoint01exp);
-        final var result01actual = triangle.findIntersections(new Ray(p111, vm1m2m3));
 
         assertNotNull(result01actual, "Can't be empty list");
         assertEquals(1, result01actual.size(), "Wrong number of points");

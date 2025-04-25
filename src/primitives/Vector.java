@@ -113,6 +113,10 @@ public class Vector extends Point {
      * @return the cross product of the two vectors
      */
     public Vector crossProduct(Vector vector) {
+        if (this.equals(vector))
+        {
+            throw new IllegalArgumentException("crossProduct resulted in zero vector");
+        }
         return new Vector(
                 this.xyz.d2() * vector.xyz.d3() - this.xyz.d3() * vector.xyz.d2(),
                 this.xyz.d3() * vector.xyz.d1() - this.xyz.d1() * vector.xyz.d3(),
