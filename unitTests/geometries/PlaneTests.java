@@ -95,14 +95,13 @@ class PlaneTests {
         assertEquals(0.0, result.dotProduct(vector3), DELTA, "Normal is not orthogonal to all edges");
     }
 
-
-
     /** A point used in some tests */
     private final Point p001 = new Point(0.0, 0.0, 1.0);
     /** A point used in some tests */
     private final Point p100 = new Point(1.0, 0.0, 0.0);
     /** A vector used in some tests */
     private final Point p010 = new Point(0.0, 1.0, 0.0);
+
     /**
      * Test method for {@link geometries.Sphere#findIntersections(primitives.Ray)}.
      */

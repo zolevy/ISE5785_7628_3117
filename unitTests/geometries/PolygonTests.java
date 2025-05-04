@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Dan
  */
 class PolygonTests {
+
     /**
      * Delta value for accuracy when comparing the numbers of type 'double' in
      * assertEquals
@@ -23,8 +24,11 @@ class PolygonTests {
 
     /**
      * Test method for {@link geometries.Polygon#Polygon(primitives.Point...)}.
+     * <p>
      * This test verifies that the constructor works correctly under various conditions,
-     * including different types of invalid inputs.
+     * including different types of invalid inputs such as incorrect vertex order,
+     * non-coplanar points, concave polygons, and other boundary conditions.
+     * </p>
      */
     @Test
     void testConstructor() {
@@ -75,12 +79,15 @@ class PolygonTests {
 
     /**
      * Test method for {@link geometries.Polygon#getNormal(primitives.Point)}.
+     * <p>
      * This test ensures that the normal vector of the polygon is calculated correctly.
      * It checks that the normal is a unit vector and is orthogonal to all the edges of the polygon.
+     * </p>
      */
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
+
         // TC01: Simple test with a quadrilateral
         Point[] pts =
                 { new Point(0.0, 0.0, 1.0), new Point(1.0, 0.0, 0.0), new Point(0.0, 1.0, 0.0), new Point(-1.0, 1.0, 1.0) };
@@ -100,5 +107,4 @@ class PolygonTests {
             assertEquals(0.0, result.dotProduct(pts[i].subtract(pts[i == 0 ? 3 : i - 1])), DELTA,
                     "Polygon's normal is not orthogonal to one of the edges");
     }
-
 }

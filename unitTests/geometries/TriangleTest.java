@@ -65,8 +65,13 @@ class TriangleTest {
     private final Point p100 = new Point(1.0, 0.0, 0.0);
     /** A vector used in some tests */
     private final Point p010 = new Point(0.0, 1.0, 0.0);
+
     /**
-     * Test method for {@link geometries.Sphere#findIntersections(primitives.Ray)}.
+     * Test method for {@link geometries.Triangle#findIntersections(primitives.Ray)}.
+     * This test verifies the behavior of the findIntersections method in different scenarios:
+     * - When the ray intersects the triangle
+     * - When the ray does not intersect the triangle
+     * - When the ray intersects the triangle on an edge or at a vertex.
      */
     @Test
     public void testFindIntersections() {
@@ -74,13 +79,12 @@ class TriangleTest {
         Vector vm1m2m3 = new Vector(-1.0,-2.0,-3.0);
 
         // ============ Equivalence Partitions Tests ==============
-        // TC01: Inside triangle (1 points)
+        // TC01: Inside triangle (1 point)
         Point p111 = new Point(1.0, 1.0, 1.0);
         Point pStart = new Point(2.5, 4.25, 6.25);
         Point interPointExp = new Point(0.5, 0.25, 0.25);
         final var listOfInterPoint01 = List.of(interPointExp);
         final var result01actual = triangle.findIntersections(new Ray(pStart, vm1m2m3));
-
 
         assertNotNull(result01actual, "Can't be empty list");
         assertEquals(1, result01actual.size(), "Wrong number of points");
@@ -105,7 +109,6 @@ class TriangleTest {
         // TC21: On edge's continuation (0 points)
         Point p2m11 = new Point(2.0, -1.0, 1.0);
         assertNull(triangle.findIntersections(new Ray(p2m11, vm1m2m3)), "Ray's line out of triangle");
-
     }
 
 }

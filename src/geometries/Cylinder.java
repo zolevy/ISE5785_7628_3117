@@ -66,6 +66,13 @@ public class Cylinder extends Tube {
         return point.subtract(center).normalize();
     }
 
-    public List<Point> findIntersections(Ray ray){return null;}
-
+    /**
+     * Finds the intersections of the cylinder with a given ray.
+     *
+     * @param ray the ray used to find intersections
+     * @return a list of points where the ray intersects the cylinder
+     */
+    public List<Point> findIntersections(Ray ray) {
+        return null;
+    }
 }

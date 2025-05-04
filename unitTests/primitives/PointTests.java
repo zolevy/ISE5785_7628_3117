@@ -5,13 +5,18 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Test class for the Point class.
+ * Test class for the {@link primitives.Point} class.
+ * This class contains unit tests to verify the correct functionality of methods
+ * for the {@link primitives.Point} class, including {@link primitives.Point#subtract(primitives.Point)},
+ * {@link primitives.Point#add(primitives.Vector)}, {@link primitives.Point#distance(primitives.Point)},
+ * and {@link primitives.Point#distanceSquared(primitives.Point)}.
  */
 class PointTests {
     private static final double DELTA = 0.000001;
 
     /**
      * Test method for {@link primitives.Point#subtract(primitives.Point)}.
+     * Verifies the subtraction of two points and boundary conditions.
      */
     @Test
     void testSubtract() {
@@ -39,6 +44,7 @@ class PointTests {
 
     /**
      * Test method for {@link primitives.Point#add(primitives.Vector)}.
+     * Verifies the addition of a vector to a point and boundary conditions.
      */
     @Test
     void testAdd() {
@@ -57,6 +63,7 @@ class PointTests {
 
     /**
      * Test method for {@link primitives.Point#distance(primitives.Point)}.
+     * Verifies the calculation of the distance between two points and boundary conditions.
      */
     @Test
     void testDistance() {
@@ -75,6 +82,7 @@ class PointTests {
 
     /**
      * Test method for {@link primitives.Point#distanceSquared(primitives.Point)}.
+     * Verifies the calculation of the squared distance between two points and boundary conditions.
      */
     @Test
     void testDistanceSquared() {

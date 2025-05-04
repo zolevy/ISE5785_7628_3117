@@ -6,6 +6,9 @@ package primitives;
  */
 public class Vector extends Point {
 
+    public static final Vector AXIS_X = new Vector(1.0, 0.0, 0.0);
+    public static final Vector AXIS_Y = new Vector(0.0, 1.0, 0.0);
+    public static final Vector AXIS_Z = new Vector(0.0, 0.0, 1.0);
     /**
      * Constructs a vector with the specified x, y, and z coordinates.
      * Throws an exception if the vector is the zero vector (0,0,0).

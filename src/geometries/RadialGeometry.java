@@ -11,15 +11,21 @@ public abstract class RadialGeometry extends Geometry {
      */
     protected final Double radius;
 
+    /**
+     * Returns the radius of the radial geometry.
+     *
+     * @return the radius
+     */
     public Double getRadius() {
         return radius;
     }
+
     /**
      * Constructs a radial geometry with the specified radius.
      *
      * @param radius the radius of the geometry
      */
     public RadialGeometry(Double radius) {
-        this.radius =radius;
+        this.radius = radius;
     }
 }

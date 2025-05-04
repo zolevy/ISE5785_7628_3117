@@ -23,8 +23,8 @@ class TubeTest {
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests =============
-        // TC01: Test normal calculation for a regular point on the tube surface
 
+        // TC01: Test normal calculation for a regular point on the tube surface
         Ray axisRay = new Ray(new Point(0.0, 0.0, 0.0), new Vector(0.0, 0.0, 1.0)); // Tube along Z-axis
         double radius = 2.0;
         Tube tube = new Tube(radius, axisRay);
@@ -41,12 +41,14 @@ class TubeTest {
         assertEquals(new Vector(1.0, 0.0, 0.0), normal, "Tube's normal is incorrect");
 
         // =============== Boundary Tests ================
+
         // TC01: Test normal calculation for a point on the tube's axis
         Point axisPoint = new Point(0.0, 0.0, 5.0); // A point on the tube's axis
         // Generate the test result for the axis point
         Vector axisNormal = tube.getNormal(axisPoint);
         // Ensure the normal is perpendicular to the tube's axis
         assertEquals(new Vector(0.0, 1.0, 0.0), axisNormal, "Tube's normal at axis point is incorrect");
+
         // TC02: Test normal calculation for a point on the tube's surface
         Point surfacePoint = new Point(0.0, 2.0, 5.0); // A point on the tube's surface
         // Generate the test result for the surface point

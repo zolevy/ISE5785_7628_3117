@@ -10,10 +10,17 @@ public class Camera implements Cloneable{
     private double vpWidth = 0.0;
     private double vpDistance = 0.0;
     private Camera() {}
+    private  double resolutionX = 0.0;
+    private  double resolutionY = 0.0;
+    private int nX = 0;
+    private int nY = 0;
+
+
     public static Builder getBuilder()
     {
-        return null;
+        return new Builder();
     }
+
 
     /**
      * Constructs a ray from the camera through a pixel in the view plane.
@@ -39,13 +46,13 @@ public class Camera implements Cloneable{
         Point centerPoint = location.add(vTo.scale(vpDistance));
 
         // Calculate the pixel size (ratios)
-        double rX = vpWidth / nX;
-        double rY = vpHeight / nY;
+        resolutionX = vpWidth / nX;
+        resolutionY = vpHeight / nY;
 
         // Calculate the coordinates of the pixel on the view plane
         // First, find the distance from center to the pixel in X and Y directions
-        double xj = (j - ((double)nX) / 2) * rX + rX / 2;
-        double yi = (i - ((double)nY) / 2) * rY + rY / 2;
+        double xj = (j - ((double)nX) / 2) * resolutionX + resolutionX / 2;
+        double yi = (i - ((double)nY) / 2) * resolutionY + resolutionY / 2;
 
         // Adjust the center point to get the point on view plane through which the ray passes
         Point pixelPoint = centerPoint;
@@ -65,7 +72,6 @@ public class Camera implements Cloneable{
         Vector direction = pixelPoint.subtract(location).normalize();
         return new Ray(location, direction);
     }
-
 
     public static class Builder
     {
@@ -158,7 +164,31 @@ public class Camera implements Cloneable{
             }
 
             //maybe calculate Vright? bit it's not missing
-            return (Camera)camera.clone();
+
+            try {
+                return (Camera) camera.clone();
+            }
+            catch (CloneNotSupportedException e){
+                throw new RuntimeException("Cloning failed unexpectedly", e);
+            }
+
+
+
         }
+    }
+    @Override
+    protected Object clone() throws CloneNotSupportedException{
+        Camera cloned = new Camera();
+        Builder builder = cloned.getBuilder()
+                .setLocation(this.location)
+                .setDirection(this.vTo, this.vUp)
+                .setVpDistance(this.vpDistance)
+                .setVpSize(this.vpWidth, this.vpHeight);
+        if (this.nX > 0 && this.nY > 0)
+        {
+            builder.setResolution(this.nX, this.nY);
+        }
+        return builder.camera;
+
     }
 }

@@ -4,13 +4,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Test class for the Vector class.
+ * Test class for the {@link primitives.Vector} class.
+ * This class contains unit tests to verify the correct functionality of various methods of the {@link primitives.Vector} class.
  */
 class VectorTests {
     private static final double DELTA = 0.000001;
 
     /**
-     * Test for Vector constructor.
+     * Test for {@link primitives.Vector#Vector(double, double, double)} constructor.
      * Verifies that a vector is created correctly and throws an error for zero vectors.
      */
     @Test
@@ -24,7 +25,7 @@ class VectorTests {
     }
 
     /**
-     * Test for lengthSquared method.
+     * Test for {@link primitives.Vector#lengthSquared()} method.
      * Verifies the length squared calculation of the vector.
      */
     @Test
@@ -40,7 +41,7 @@ class VectorTests {
     }
 
     /**
-     * Test for length method.
+     * Test for {@link primitives.Vector#length()} method.
      * Verifies the length calculation of the vector.
      */
     @Test
@@ -56,7 +57,7 @@ class VectorTests {
     }
 
     /**
-     * Test for add method.
+     * Test for {@link primitives.Vector#add(primitives.Vector)} method.
      * Verifies that vector addition is performed correctly.
      */
     @Test
@@ -75,7 +76,7 @@ class VectorTests {
     }
 
     /**
-     * Test for scale method.
+     * Test for {@link primitives.Vector#scale(double)} method.
      * Verifies that scaling a vector by a scalar is performed correctly.
      */
     @Test
@@ -92,7 +93,7 @@ class VectorTests {
     }
 
     /**
-     * Test for dotProduct method.
+     * Test for {@link primitives.Vector#dotProduct(primitives.Vector)} method.
      * Verifies the dot product calculation between two vectors.
      */
     @Test
@@ -116,7 +117,7 @@ class VectorTests {
     }
 
     /**
-     * Test for crossProduct method.
+     * Test for {@link primitives.Vector#crossProduct(primitives.Vector)} method.
      * Verifies the cross product calculation between two vectors.
      */
     @Test
@@ -146,7 +147,7 @@ class VectorTests {
     }
 
     /**
-     * Test for normalize method.
+     * Test for {@link primitives.Vector#normalize()} method.
      * Verifies that the vector is normalized correctly.
      */
     @Test
@@ -165,7 +166,7 @@ class VectorTests {
     }
 
     /**
-     * Test for subtract method.
+     * Test for {@link primitives.Vector#subtract(primitives.Vector)} method.
      * Verifies that vector subtraction is performed correctly.
      */
     @Test

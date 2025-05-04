@@ -35,37 +35,29 @@ public class Polygon extends Geometry {
      *
      * @param vertices list of vertices according to their order by edge path
      * @throws IllegalArgumentException in any case of illegal combination of vertices:
-     *                                  <ul>
-     *                                      <li>Less than 3 vertices</li>
-     *                                      <li>Consecutive vertices are at the same point</li>
-     *                                      <li>The vertices are not in the same plane</li>
-     *                                      <li>The order of vertices is not according to edge path</li>
-     *                                      <li>Three consecutive vertices lie in the same line</li>
-     *                                      <li>The polygon is concave (not convex)</li>
-     *                                  </ul>
+     * <ul>
+     *     <li>Less than 3 vertices</li>
+     *     <li>Consecutive vertices are at the same point</li>
+     *     <li>The vertices are not in the same plane</li>
+     *     <li>The order of vertices is not according to edge path</li>
+     *     <li>Three consecutive vertices lie in the same line</li>
+     *     <li>The polygon is concave (not convex)</li>
+     * </ul>
      */
     public Polygon(Point... vertices) {
         if (vertices.length < 3)
             throw new IllegalArgumentException("A polygon can't have less than 3 vertices");
         this.vertices = List.of(vertices);
         size = vertices.length;
-
-        // Generate the plane according to the first three vertices and associate the
-        // polygon with this plane.
-        // The plane holds the invariant normal (orthogonal unit) vector to the polygon
         plane = new Plane(vertices[0], vertices[1], vertices[2]);
-        if (size == 3) return; // no need for more tests for a Triangle
-
+        if (size == 3) return;
         Vector n = plane.getNormal(vertices[0]);
         Vector edge1 = vertices[size - 1].subtract(vertices[size - 2]);
         Vector edge2 = vertices[0].subtract(vertices[size - 1]);
-
         boolean positive = edge1.crossProduct(edge2).dotProduct(n) > 0;
         for (var i = 1; i < size; ++i) {
-            // Test that the point is in the same plane as calculated originally
             if (!isZero(vertices[i].subtract(vertices[0]).dotProduct(n)))
                 throw new IllegalArgumentException("All vertices of a polygon must lay in the same plane");
-            // Test the consequent edges have
             edge1 = edge2;
             edge2 = vertices[i].subtract(vertices[i - 1]);
             if (positive != (edge1.crossProduct(edge2).dotProduct(n) > 0))
@@ -85,7 +77,14 @@ public class Polygon extends Geometry {
         return plane.getNormal(point);
     }
 
-
-    public List<Point> findIntersections(Ray ray) {return null;}
-
+    /**
+     * Finds the intersection points between a ray and the polygon.
+     * Currently not implemented.
+     *
+     * @param ray the ray to intersect with the polygon
+     * @return null (not implemented)
+     */
+    public List<Point> findIntersections(Ray ray) {
+        return null;
+    }
 }

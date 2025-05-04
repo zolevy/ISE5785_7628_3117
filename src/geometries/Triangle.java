@@ -1,18 +1,28 @@
 package geometries;
+
 import primitives.*;
-
 import java.util.List;
-
 import static primitives.Util.*;
 
 /**
  * Represents a triangle in 3D space, defined as a specific case of a polygon with three vertices.
  */
 public class Triangle extends Polygon {
+    /**
+     * Constructs a triangle with the specified vertices.
+     *
+     * @param vertices the three vertices of the triangle
+     */
     public Triangle(Point... vertices) {
         super(vertices);
     }
 
+    /**
+     * Finds the intersection points of a ray with the triangle.
+     *
+     * @param ray the ray to intersect with the triangle
+     * @return a list containing the intersection point, or null if there are no intersections
+     */
     @Override
     public List<Point> findIntersections(Ray ray) {
         Point p0 = ray.getHead();
@@ -52,6 +62,4 @@ public class Triangle extends Polygon {
 
         return null;
     }
-
-
 }

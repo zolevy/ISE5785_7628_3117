@@ -1,7 +1,9 @@
 package geometries;
+
 import primitives.*;
 import java.util.List;
 import static primitives.Util.*;
+
 /**
  * Represents a sphere in 3D space, defined by a center point and a radius.
  */
@@ -33,29 +35,45 @@ public class Sphere extends RadialGeometry {
         return point.subtract(this.center).normalize();
     }
 
-
+    /**
+     * Returns the center point of the sphere.
+     *
+     * @return the center point
+     */
     public Point getCenter() {
         return center;
     }
 
+    /**
+     * Returns the radius of the sphere.
+     *
+     * @return the radius
+     */
     public Double getRadius() {
         return super.getRadius();
     }
 
+    /**
+     * Finds the intersection points of a ray with the sphere.
+     *
+     * @param ray the ray to intersect with the sphere
+     * @return a list of intersection points, or null if there are no intersections
+     */
     @Override
     public List<Point> findIntersections(Ray ray) {
         Point rayOrigin = ray.getHead();
         Vector rayDirection = ray.getDirection();
 
-
         Point sphereCenter = getCenter();
         double sphereRadius = getRadius();
-
+        if (rayOrigin.equals(center)) {
+            return List.of(rayOrigin);
+        }
         Vector u = sphereCenter.subtract(rayOrigin);
 
         double tm = alignZero(rayDirection.dotProduct(u));
         double dSquared = alignZero(u.lengthSquared() - tm * tm);
-        double radiusSquared = sphereRadius * sphereRadius;
+        double radiusSquared = alignZero(sphereRadius * sphereRadius);
 
         if (dSquared >= radiusSquared) return null;
 
@@ -80,4 +98,6 @@ public class Sphere extends RadialGeometry {
 
         return List.of(ray.getPoint(t1), ray.getPoint(t2));
     }
+
+
 }
