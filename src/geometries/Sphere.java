@@ -1,6 +1,8 @@
 package geometries;
 
 import primitives.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import static primitives.Util.*;
 
@@ -61,43 +63,40 @@ public class Sphere extends RadialGeometry {
      */
     @Override
     public List<Point> findIntersections(Ray ray) {
-        Point rayOrigin = ray.getHead();
-        Vector rayDirection = ray.getDirection();
+        Point P0 = ray.getHead();
+        Vector v = ray.getDirection();
+        Point O = this.center;
 
-        Point sphereCenter = getCenter();
-        double sphereRadius = getRadius();
-        if (rayOrigin.equals(center)) {
-            return List.of(rayOrigin);
+        Vector u;
+        try {
+            u = O.subtract(P0);
+        } catch (IllegalArgumentException e) {
+            // Ray starts at the center of the sphere
+            return List.of(P0.add(v.scale(this.radius)));
         }
-        Vector u = sphereCenter.subtract(rayOrigin);
 
-        double tm = alignZero(rayDirection.dotProduct(u));
-        double dSquared = alignZero(u.lengthSquared() - tm * tm);
-        double radiusSquared = alignZero(sphereRadius * sphereRadius);
+        double tm = v.dotProduct(u);
+        double dSquared = u.lengthSquared() - tm * tm;
+        double rSquared = this.radius * this.radius;
 
-        if (dSquared >= radiusSquared) return null;
+        if (dSquared > rSquared) return null;
 
-        double thSquared = radiusSquared - dSquared;
-        if (isZero(thSquared)) return null;
+        double thSquared = rSquared - dSquared;
+        if (Util.isZero(thSquared)) thSquared = 0; // for safety in sqrt
+        if (thSquared < 0) return null;
 
         double th = Math.sqrt(thSquared);
+        double t1 = Util.alignZero(tm - th);
+        double t2 = Util.alignZero(tm + th);
 
-        double t1 = alignZero(tm - th);
-        double t2 = alignZero(tm + th);
+        if (t1 > 0 && t2 > 0)
+            return List.of(P0.add(v.scale(t1)), P0.add(v.scale(t2)));
+        if (t1 > 0)
+            return List.of(P0.add(v.scale(t1)));
+        if (t2 > 0)
+            return List.of(P0.add(v.scale(t2)));
 
-        boolean t1Valid = t1 > 0;
-        boolean t2Valid = t2 > 0;
-
-        if (!t1Valid && !t2Valid) return null;
-
-        if (t1Valid && !t2Valid)
-            return List.of(ray.getPoint(t1));
-
-        if (t2Valid && !t1Valid)
-            return List.of(ray.getPoint(t2));
-
-        return List.of(ray.getPoint(t1), ray.getPoint(t2));
+        return null;
     }
-
 
 }

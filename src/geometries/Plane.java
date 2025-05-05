@@ -2,6 +2,7 @@ package geometries;
 
 import primitives.Point;
 import primitives.Ray;
+import primitives.Util;
 import primitives.Vector;
 
 import java.util.List;
@@ -94,16 +95,30 @@ public class Plane extends Geometry {
      */
     @Override
     public List<Point> findIntersections(Ray ray) {
-        Point rayOrigin = ray.getHead();
-        Vector rayDirection = ray.getDirection();
-        Vector normalToPlane = normal;
-        Point q0 = getQ();
-        double nv = alignZero(normalToPlane.dotProduct(rayDirection));
-        if (isZero(nv)) return null;
-        double numerator = alignZero(normalToPlane.dotProduct(q0.subtract(rayOrigin)));
-        double t = alignZero(numerator / nv);
-        if (t <= 0) return null;
-        Point intersectionPoint = ray.getPoint(t);
-        return List.of(intersectionPoint);
+        Point p0 = ray.getHead();
+        Vector dir = ray.getDirection();
+
+        Vector n = this.normal;
+
+        double nv = n.dotProduct(dir);
+        if (Util.isZero(nv)) {
+            // Ray is parallel to the plane
+            return null;
+        }
+
+        double numerator = n.dotProduct(q.subtract(p0));
+        if (Util.isZero(numerator)) {
+            // Ray starts on the plane → no intersection according to test logic
+            return null;
+        }
+
+        double t = Util.alignZero(numerator / nv);
+        if (t <= 0) {
+            // Intersection is behind the ray's origin or at the origin
+            return null;
+        }
+
+        return List.of(ray.getPoint(t));
     }
+
 }
