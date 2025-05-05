@@ -114,7 +114,6 @@ public class Plane extends Geometry {
 
         double t = Util.alignZero(numerator / nv);
         if (t <= 0) {
-            // Intersection is behind the ray's origin or at the origin
             return null;
         }
 
