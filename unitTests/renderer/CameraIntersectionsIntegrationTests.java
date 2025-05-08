@@ -17,7 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CameraIntersectionsIntegrationTests {
 
     /**
-     * Helper method to count the total number of intersection points
+     * Helper method to count the total number of intersection points between rays constructed by the camera
+     * and a given geometry. It constructs a 3x3 grid of rays through the view plane.
+     *
+     * @param camera        the camera to construct rays from
+     * @param geometry      the geometry to test intersections with
+     * @param expectedCount the expected number of intersection points
      */
     private void assertIntersections(Camera camera, Intersectable geometry, int expectedCount) {
         int nX = 3, nY = 3;
@@ -35,7 +40,12 @@ public class CameraIntersectionsIntegrationTests {
     }
 
     /**
-     * Test integration of camera and sphere intersections
+     * Test integration of camera and sphere intersections for multiple test cases:
+     * TC01 - small sphere, 2 intersections
+     * TC02 - large sphere encompassing camera, 18 intersections
+     * TC03 - medium sphere intersecting center rays, 10 intersections
+     * TC04 - very large sphere, fully covering the view plane, 9 intersections
+     * TC05 - sphere behind the camera, 0 intersections
      */
     @Test
     public void testCameraSphereIntersections() {
@@ -70,7 +80,10 @@ public class CameraIntersectionsIntegrationTests {
     }
 
     /**
-     * Test integration of camera and plane intersections
+     * Test integration of camera and plane intersections for multiple test cases:
+     * TC01 - plane perpendicular to view direction, 9 intersections
+     * TC02 - plane tilted, all rays intersect, 9 intersections
+     * TC03 - steeply angled plane, 6 intersections
      */
     @Test
     public void testCameraPlaneIntersections() {
@@ -92,7 +105,9 @@ public class CameraIntersectionsIntegrationTests {
     }
 
     /**
-     * Test integration of camera and triangle intersections
+     * Test integration of camera and triangle intersections for multiple test cases:
+     * TC01 - small triangle intersected by 1 ray
+     * TC02 - larger triangle intersected by 2 rays
      */
     @Test
     public void testCameraTriangleIntersections() {

@@ -1,26 +1,32 @@
 package renderer;
+
 import geometries.*;
 import primitives.*;
 import java.util.MissingResourceException;
 
-public class Camera implements Cloneable{
+/**
+ * The {@code Camera} class represents a virtual camera in 3D space.
+ * It is responsible for generating rays through pixels on a view plane.
+ */
+public class Camera implements Cloneable {
     private Point location = null;
     private Vector vUp = null, vTo = null, vRight = null;
     private double vpHeight = 0.0;
     private double vpWidth = 0.0;
     private double vpDistance = 0.0;
     private Camera() {}
-    private  double resolutionX = 0.0;
-    private  double resolutionY = 0.0;
+    private double resolutionX = 0.0;
+    private double resolutionY = 0.0;
     private int nX = 0;
     private int nY = 0;
 
-
-    public static Builder getBuilder()
-    {
+    /**
+     * Returns a new builder to construct a camera instance.
+     * @return a new {@code Builder} for creating a camera
+     */
+    public static Builder getBuilder() {
         return new Builder();
     }
-
 
     /**
      * Constructs a ray from the camera through a pixel in the view plane.
@@ -50,74 +56,92 @@ public class Camera implements Cloneable{
         resolutionY = vpHeight / nY;
 
         // Calculate the coordinates of the pixel on the view plane
-        // First, find the distance from center to the pixel in X and Y directions
-        //double xj = (j - ((double)nX) / 2) * resolutionX + resolutionX / 2;
-        //double yi = (i - ((double)nY) / 2) * resolutionY + resolutionY / 2;
         double xj = (j - (double) (nX - 1) / 2) * resolutionX;
         double yi = -(i - (double) (nY - 1) / 2) * resolutionY;
 
         // Adjust the center point to get the point on view plane through which the ray passes
         Point pixelPoint = centerPoint;
 
-        // Add the X component (move right)
         if (xj != 0) {
             pixelPoint = pixelPoint.add(vRight.scale(xj));
         }
 
-        // Subtract the Y component (move up)
-        // The negative sign is because the Y-coordinate increases downward in the pixel grid
         if (yi != 0) {
             pixelPoint = pixelPoint.add(vUp.scale(yi));
         }
 
-        // Construct and return the ray from camera location through the pixel point
         Vector direction = pixelPoint.subtract(location).normalize();
         return new Ray(location, direction);
     }
 
-    public static class Builder
-    {
+    /**
+     * Builder class for constructing {@code Camera} instances with flexible configuration.
+     */
+    public static class Builder {
         final private Camera camera = new Camera();
-        public Builder setLocation(Point newLocation)
-        {
+
+        /**
+         * Sets the location of the camera.
+         * @param newLocation the location (eye point) of the camera
+         * @return this builder instance
+         */
+        public Builder setLocation(Point newLocation) {
             camera.location = newLocation;
             return this;
         }
 
-        public Builder setDirection(Vector vTo, Vector vUp)
-        {
-            if (vTo.dotProduct(vUp)!=0)
-            {
+        /**
+         * Sets the direction vectors (vTo and vUp) for the camera.
+         * @param vTo vector toward the view plane (look direction)
+         * @param vUp vector upwards from the camera (must be orthogonal to vTo)
+         * @return this builder instance
+         * @throws IllegalArgumentException if vTo and vUp are not orthogonal
+         */
+        public Builder setDirection(Vector vTo, Vector vUp) {
+            if (vTo.dotProduct(vUp) != 0) {
                 throw new IllegalArgumentException("the vectors given for setting direction are not orthogonal");
             }
             camera.vUp = vUp.normalize();
             camera.vTo = vTo.normalize();
             camera.vRight = vTo.crossProduct(vUp).normalize();
-
             return this;
         }
 
-        public Builder setDirection(Point target, Vector tempVup)
-        {
+        /**
+         * Sets the direction of the camera using a target point and an up vector.
+         * @param target point the camera is looking at
+         * @param tempVup temporary up vector to compute orientation
+         * @return this builder instance
+         */
+        public Builder setDirection(Point target, Vector tempVup) {
             camera.vTo = target.subtract(camera.location).normalize();
             camera.vRight = tempVup.crossProduct(camera.vTo).normalize();
-            camera.vUp = camera.vTo.crossProduct(camera.vRight); //maybe normalize?
+            camera.vUp = camera.vTo.crossProduct(camera.vRight);
             return this;
         }
 
-        public Builder setDirection(Point target)
-        {
-            Vector tempVup = new Vector (0.0,1.0,0.0);
+        /**
+         * Sets the direction of the camera using a target point.
+         * @param target point the camera is looking at
+         * @return this builder instance
+         */
+        public Builder setDirection(Point target) {
+            Vector tempVup = new Vector(0.0, 1.0, 0.0);
             camera.vTo = target.subtract(camera.location).normalize();
             camera.vRight = tempVup.crossProduct(camera.vTo).normalize();
-            camera.vUp = camera.vTo.crossProduct(camera.vRight); //maybe normalize?
+            camera.vUp = camera.vTo.crossProduct(camera.vRight);
             return this;
         }
 
-        public Builder setVpSize(double width, double height)
-        {
-            if (height<=0||width<=0)
-            {
+        /**
+         * Sets the view plane size (width and height).
+         * @param width width of the view plane
+         * @param height height of the view plane
+         * @return this builder instance
+         * @throws IllegalArgumentException if width or height is non-positive
+         */
+        public Builder setVpSize(double width, double height) {
+            if (height <= 0 || width <= 0) {
                 throw new IllegalArgumentException("high or width given for setting the View Plane are not positive values");
             }
             camera.vpHeight = height;
@@ -125,23 +149,36 @@ public class Camera implements Cloneable{
             return this;
         }
 
-        public Builder setVpDistance(double distance)
-        {
-            if (distance<=0)
-            {
+        /**
+         * Sets the distance from the camera to the view plane.
+         * @param distance the distance to set
+         * @return this builder instance
+         * @throws IllegalArgumentException if distance is non-positive
+         */
+        public Builder setVpDistance(double distance) {
+            if (distance <= 0) {
                 throw new IllegalArgumentException("distance given for setting the View Plane is not positive value");
             }
             camera.vpDistance = distance;
             return this;
         }
 
-        public Builder setResolution(int nX, int nY)
-        {
+        /**
+         * Sets the resolution of the view plane (currently not implemented).
+         * @param nX number of pixels in width
+         * @param nY number of pixels in height
+         * @return {@code null} (method is a placeholder)
+         */
+        public Builder setResolution(int nX, int nY) {
             return null;
         }
 
-        public Camera build()
-        {
+        /**
+         * Builds and returns a fully-initialized {@code Camera} instance.
+         * @return the configured camera
+         * @throws MissingResourceException if required parameters are missing
+         */
+        public Camera build() {
             final String MISSING_DATA_MSG = "missing rendering parameter";
             if (camera.location == null) {
                 throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "location");
@@ -152,9 +189,6 @@ public class Camera implements Cloneable{
             if (camera.vUp == null) {
                 throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "Vup");
             }
-            /*if (camera.Vright == null) {
-                throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "Vright");
-            }*/
             if (camera.vpHeight == 0.0) {
                 throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "hightVP");
             }
@@ -165,32 +199,30 @@ public class Camera implements Cloneable{
                 throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "distanceFromCamera");
             }
 
-            //maybe calculate Vright? bit it's not missing
-
             try {
                 return (Camera) camera.clone();
-            }
-            catch (CloneNotSupportedException e){
+            } catch (CloneNotSupportedException e) {
                 throw new RuntimeException("Cloning failed unexpectedly", e);
             }
-
-
-
         }
     }
+
+    /**
+     * Creates and returns a deep clone of this camera using the builder.
+     * @return a cloned camera
+     * @throws CloneNotSupportedException if cloning fails unexpectedly
+     */
     @Override
-    protected Object clone() throws CloneNotSupportedException{
+    protected Object clone() throws CloneNotSupportedException {
         Camera cloned = new Camera();
         Builder builder = cloned.getBuilder()
                 .setLocation(this.location)
                 .setDirection(this.vTo, this.vUp)
                 .setVpDistance(this.vpDistance)
                 .setVpSize(this.vpWidth, this.vpHeight);
-        if (this.nX > 0 && this.nY > 0)
-        {
+        if (this.nX > 0 && this.nY > 0) {
             builder.setResolution(this.nX, this.nY);
         }
         return builder.camera;
-
     }
 }
