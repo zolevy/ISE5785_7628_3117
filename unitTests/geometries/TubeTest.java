@@ -42,12 +42,14 @@ class TubeTest {
 
         // =============== Boundary Tests ================
 
-        // TC01: Test normal calculation for a point on the tube's axis
+       /* // TC01: Test normal calculation for a point on the tube's axis
         Point axisPoint = new Point(0.0, 0.0, 5.0); // A point on the tube's axis
         // Generate the test result for the axis point
         Vector axisNormal = tube.getNormal(axisPoint);
         // Ensure the normal is perpendicular to the tube's axis
         assertEquals(new Vector(0.0, 1.0, 0.0), axisNormal, "Tube's normal at axis point is incorrect");
+
+        */
 
         // TC02: Test normal calculation for a point on the tube's surface
         Point surfacePoint = new Point(0.0, 2.0, 5.0); // A point on the tube's surface

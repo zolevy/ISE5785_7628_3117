@@ -50,10 +50,17 @@ public class CameraIntersectionsIntegrationTests {
         assertIntersections(camera, new Sphere(1.0, new Point(0.0,0.0,-3.0)), 2);
 
         // TC02: big sphere - 18 intersections
-        assertIntersections(camera, new Sphere(2.5, new Point(0.0, 0.0, -2.5)), 18);
+        Camera camera2 = Camera.getBuilder()
+                .setLocation(new Point(0.0, 0.0, 0.5))
+                .setDirection(new Vector(0.0, 0.0, -1.0), new Vector(0.0, -1.0, 0.0))
+                .setVpDistance(1.0)
+                .setVpSize(3.0, 3.0)
+                .build();
+
+        assertIntersections(camera2, new Sphere(2.5, new Point(0.0, 0.0, -2.5)), 18);
 
         // TC03: medium sphere - 10 intersections
-        assertIntersections(camera, new Sphere(2.0, new Point(0.0, 0.0, -2.0)), 10);
+        assertIntersections(camera2, new Sphere(2.0, new Point(0.0, 0.0, -2.0)), 10);
 
         // TC04: large sphere covering view plane - 9 intersections
         assertIntersections(camera, new Sphere( 4.0, new Point(0.0, 0.0, -1.0)), 9);

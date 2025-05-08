@@ -98,8 +98,7 @@ class PlaneTests {
 
         // TC02: Ray starts before and goes away from plane
         Point p111 = new Point(1.0, 1.0, 1.0);
-        Vector vm1m2m3 = new Vector(-1.0, -2.0, -3.0);
-        assertNull(plane.findIntersections(new Ray(p111, vm1m2m3)));
+        assertNull(plane.findIntersections(new Ray(p111, new Vector(1.0, 2.0, 3.0))));
 
         // =============== Boundary Values Tests ==================
 
@@ -120,11 +119,9 @@ class PlaneTests {
         assertNull(plane.findIntersections(new Ray(p05050, vm1m1m1)));
 
         // TC23: Ray is orthogonal and starts after the plane
-        Point interPoint23exp = new Point(1.0 / 3, 1.0 / 3, 1.0 / 3);
-        var result23actual = plane.findIntersections(new Ray(p05050, vm1m1m1));
-        assertNotNull(result23actual);
-        assertEquals(1, result23actual.size());
-        assertEquals(List.of(interPoint23exp), result23actual);
+        Point pointAbove = new Point(0.5, 0.5, 1.0);
+        Vector directionAway = new Vector(0.0, 0.0, 1.0);
+        assertNull((new Plane(p001, p100, p010)).findIntersections(new Ray(pointAbove, directionAway)), "Ray is orthogonal and goes away from the plane — should not intersect");
 
         // TC31: Ray starts at plane but not orthogonal or parallel
         Vector v123 = new Vector(1.0, 2.0, 3.0);

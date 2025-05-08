@@ -51,8 +51,10 @@ public class Camera implements Cloneable{
 
         // Calculate the coordinates of the pixel on the view plane
         // First, find the distance from center to the pixel in X and Y directions
-        double xj = (j - ((double)nX) / 2) * resolutionX + resolutionX / 2;
-        double yi = (i - ((double)nY) / 2) * resolutionY + resolutionY / 2;
+        //double xj = (j - ((double)nX) / 2) * resolutionX + resolutionX / 2;
+        //double yi = (i - ((double)nY) / 2) * resolutionY + resolutionY / 2;
+        double xj = (j - (double) (nX - 1) / 2) * resolutionX;
+        double yi = -(i - (double) (nY - 1) / 2) * resolutionY;
 
         // Adjust the center point to get the point on view plane through which the ray passes
         Point pixelPoint = centerPoint;
@@ -65,7 +67,7 @@ public class Camera implements Cloneable{
         // Subtract the Y component (move up)
         // The negative sign is because the Y-coordinate increases downward in the pixel grid
         if (yi != 0) {
-            pixelPoint = pixelPoint.add(vUp.scale(-yi));
+            pixelPoint = pixelPoint.add(vUp.scale(yi));
         }
 
         // Construct and return the ray from camera location through the pixel point
