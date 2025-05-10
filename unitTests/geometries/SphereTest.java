@@ -161,7 +161,7 @@ class SphereTest {
 
         // TC25: Ray starts at surface and goes outside (0 points)
         ray = new Ray(new Point(2.0, 1.0, 0.0), new Vector(1.0, 0.0, 0.0));
-        assertNull(sphere.findIntersections(ray), "Ray goes out");
+        assertNull(sphere.findIntersections(ray), "Ray goes out.");
     }
 
 }
