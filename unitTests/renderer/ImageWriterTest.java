@@ -26,7 +26,7 @@ class ImageWriterTest {
             }
             else
                 grid = false;
-            for (int xIndex = 0; xIndex < nX+1; xIndex++)
+            for (int xIndex = 0; xIndex < nX; xIndex++)
             {
                 if (grid==true)
                 {

@@ -3,6 +3,7 @@ package scene;
 import geometries.Geometries;
 import lighting.AmbientLight;
 import primitives.Color;
+import renderer.Camera;
 
 public class Scene {
     public String name;
@@ -19,13 +20,21 @@ public class Scene {
         return this;
     }
 
-    public Scene setBackround(Color backround) {
+    /*public Scene setBackround(Color backround) {
         this.backround = backround;
         return this;
-    }
+    }*/
 
     public Scene setGeometries(Geometries geometries) {
         this.geometries = geometries;
         return this;
     }
+
+    public Scene setBackground(Color color) {
+        this.backround = color;
+        return this;
+
+    }
+
+
 }

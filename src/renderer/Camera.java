@@ -1,6 +1,5 @@
 package renderer;
 
-import geometries.*;
 import primitives.*;
 import scene.Scene;
 
@@ -29,8 +28,13 @@ public class Camera implements Cloneable {
     RayTracerBase rayTracer;
 
 
-    public Scene rendrerImage() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public Camera renderImage() {
+         for (int i = 0; i < nX; i++) {
+             for (int j = 0; j < nY; j++) {
+                 castRay(nX, nY, i, j);
+             }
+        }
+         return this;
     }
 
     /**
@@ -122,7 +126,7 @@ public class Camera implements Cloneable {
             return this;
         }
 
-        public void setRayTracer(Scene scene, RayTracerType rayTracer) {
+        public Builder setRayTracer(Scene scene, RayTracerType rayTracer) {
             switch (rayTracer) {
                 case SIMPLE:
                     camera.rayTracer = new SimpleRayTracer(scene);
@@ -130,6 +134,7 @@ public class Camera implements Cloneable {
                 default:
                     camera.rayTracer = null;
             }
+            return this;
         }
 
 
@@ -263,12 +268,39 @@ public class Camera implements Cloneable {
                 this.camera.rayTracer = new SimpleRayTracer(new Scene(null));
             }
 
+
             try {
                 return (Camera) camera.clone();
             } catch (CloneNotSupportedException e) {
-                //throw new RuntimeException("Cloning failed unexpectedly", e);
-                return null;
+                throw new RuntimeException("Cloning failed unexpectedly", e);
             }
         }
     }
+
+    /**
+     * Creates and returns a deep clone of this camera using the builder.
+     * @return a cloned camera
+     * @throws CloneNotSupportedException if cloning fails unexpectedly
+     */
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        Camera cloned = new Camera();
+        Builder builder = cloned.getBuilder()
+                .setLocation(this.location)
+                .setDirection(this.vTo, this.vUp)
+                .setVpDistance(this.vpDistance)
+                .setVpSize(this.vpWidth, this.vpHeight);
+        if (this.nX > 0 && this.nY > 0) {
+            builder.setResolution(this.nX, this.nY);
+        }
+        return builder.camera;
+
+        }
+
+    private void castRay(int Nx, int Ny, int column, int row){
+        Color color = rayTracer.traceRay(constructRay(Nx,Ny,column,row));
+        imageWriter.writePixel(column,row,color);
+
+    }
+
 }
