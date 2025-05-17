@@ -10,24 +10,40 @@ import java.util.MissingResourceException;
  * It is responsible for generating rays through pixels on a view plane.
  */
 public class Camera implements Cloneable {
+    /** Location of the camera in 3D space */
     private Point location = null;
+
+    /** Up, to, and right direction vectors of the camera */
     private Vector vUp = null, vTo = null, vRight = null;
+
+    /** View plane height, width and distance from the camera */
     private double vpHeight = 0.0;
     private double vpWidth = 0.0;
     private double vpDistance = 0.0;
 
+    /** Private constructor for use by the builder */
     private Camera() {
     }
 
+    /** View plane resolution in X and Y directions */
     private double resolutionX = 0.0;
     private double resolutionY = 0.0;
+
+    /** Number of pixels in width and height of view plane */
     private int nX = 1;
     private int nY = 1;
 
+    /** Image writer for rendering pixels */
     ImageWriter imageWriter;
+
+    /** Ray tracer for computing color of rays */
     RayTracerBase rayTracer;
 
-
+    /**
+     * Renders the image by casting rays through each pixel.
+     *
+     * @return this camera instance
+     */
     public Camera renderImage() {
         for (int i = 0; i < nY; ++i) {
             for (int j = 0; j < nX; ++j) {
@@ -46,24 +62,24 @@ public class Camera implements Cloneable {
         return new Builder();
     }
 
-
+    /**
+     * Prints a grid over the rendered image with the specified interval and color.
+     *
+     * @param interval interval between grid lines
+     * @param color    color of the grid lines
+     * @return this camera instance
+     */
     public Camera printGrid(int interval, Color color) {
         boolean grid = true;
-        for (int yIndex=0; yIndex<nY; yIndex++) {
-            if (yIndex%interval==0)
-            {
+        for (int yIndex = 0; yIndex < nY; yIndex++) {
+            if (yIndex % interval == 0) {
                 grid = true;
-            }
-            else
+            } else
                 grid = false;
-            for (int xIndex = 0; xIndex < nX; xIndex++)
-            {
-                if (grid==true)
-                {
+            for (int xIndex = 0; xIndex < nX; xIndex++) {
+                if (grid == true) {
                     imageWriter.writePixel(xIndex, yIndex, color);
-                }
-                else if (xIndex%interval==0)
-                {
+                } else if (xIndex % interval == 0) {
                     imageWriter.writePixel(xIndex, yIndex, color);
                 }
             }
@@ -71,6 +87,12 @@ public class Camera implements Cloneable {
         return this;
     }
 
+    /**
+     * Writes the rendered image to a file.
+     *
+     * @param fileName name of the output image file
+     * @return this camera instance
+     */
     public Camera writeToImage(String fileName) {
         imageWriter.writeToImage(fileName);
         return this;
@@ -101,7 +123,7 @@ public class Camera implements Cloneable {
         resolutionY = vpHeight / nY;
 
         double xj = (j - (double) (nX - 1) / 2) * resolutionX;
-        double yi = -((i - (double) (nY - 1) / 2) * resolutionY); // <-- FIXED LINE
+        double yi = -((i - (double) (nY - 1) / 2) * resolutionY);
 
         Point pixelPoint = centerPoint;
 
@@ -138,18 +160,27 @@ public class Camera implements Cloneable {
             return this;
         }
 
+        /**
+         * Sets the image writer for the camera.
+         *
+         * @param imageWriter the image writer to use
+         * @return this builder instance
+         */
         public Builder setImageWriter(ImageWriter imageWriter) {
             camera.imageWriter = imageWriter;
             return this;
         }
 
+        /**
+         * Sets the ray tracer and scene for the camera.
+         *
+         * @param scene     the scene to trace
+         * @param rayTracer the ray tracer type to use
+         * @return this builder instance
+         */
         public Builder setRayTracer(Scene scene, RayTracerType rayTracer) {
             switch (rayTracer) {
                 case SIMPLE:
-                    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                    //need to make sure scene is not null
-                    //also please remember that this func exist when u walk through
-                    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                     camera.rayTracer = new SimpleRayTracer(scene);
                     break;
                 default:
@@ -157,7 +188,6 @@ public class Camera implements Cloneable {
             }
             return this;
         }
-
 
         /**
          * Sets the direction vectors (vTo and vUp) for the camera.
@@ -234,11 +264,12 @@ public class Camera implements Cloneable {
         }
 
         /**
-         * Sets the resolution of the view plane (currently not implemented).
+         * Sets the resolution of the view plane.
          *
          * @param nX number of pixels in width
          * @param nY number of pixels in height
-         * @return {@code null} (method is a placeholder)
+         * @return this builder instance
+         * @throws IllegalArgumentException if resolution values are not positive
          */
         public Builder setResolution(int nX, int nY) {
             if (nX <= 0 || nY <= 0) {
@@ -278,10 +309,11 @@ public class Camera implements Cloneable {
 
     /**
      * Deep copy constructor for Camera.
+     *
      * @param other the Camera instance to copy from
      */
     public Camera(Camera other) {
-        this.location = other.location; // Point is probably immutable
+        this.location = other.location;
         this.vUp = other.vUp;
         this.vTo = other.vTo;
         this.vRight = other.vRight;
@@ -295,14 +327,20 @@ public class Camera implements Cloneable {
         this.nX = other.nX;
         this.nY = other.nY;
 
-        this.imageWriter = new ImageWriter(nX, nY); // create a fresh one per build
-        this.rayTracer = other.rayTracer; // SimpleRayTracer is stateless, shallow copy is fine
+        this.imageWriter = new ImageWriter(nX, nY);
+        this.rayTracer = other.rayTracer;
     }
 
-
-    private void castRay(int Nx, int Ny, int column, int row){
-        Color color = rayTracer.traceRay(constructRay(Nx,Ny,column,row));
-        imageWriter.writePixel(column,row,color);
+    /**
+     * Casts a ray through a specific pixel and writes its color to the image.
+     *
+     * @param Nx     number of pixels in width
+     * @param Ny     number of pixels in height
+     * @param column column index of the pixel
+     * @param row    row index of the pixel
+     */
+    private void castRay(int Nx, int Ny, int column, int row) {
+        Color color = rayTracer.traceRay(constructRay(Nx, Ny, column, row));
+        imageWriter.writePixel(column, row, color);
     }
-
 }
