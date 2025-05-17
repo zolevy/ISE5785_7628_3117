@@ -29,12 +29,12 @@ public class Camera implements Cloneable {
 
 
     public Camera renderImage() {
-         for (int i = 0; i < nX; i++) {
-             for (int j = 0; j < nY; j++) {
-                 castRay(nX, nY, i, j);
-             }
+        for (int i = 0; i < nY; ++i) {
+            for (int j = 0; j < nX; ++j) {
+                castRay(nX, nY, j, i);
+            }
         }
-         return this;
+        return this;
     }
 
     /**
@@ -46,13 +46,26 @@ public class Camera implements Cloneable {
         return new Builder();
     }
 
+
     public Camera printGrid(int interval, Color color) {
-        if (imageWriter == null) {
-            throw new UnsupportedOperationException("ImageWriter is not initialized");
-        }
-        for (int i = 0; i < nX; i += interval) {
-            for (int j = 0; j < nY; j++) {
-                imageWriter.writePixel(i, j, color);
+        boolean grid = true;
+        for (int yIndex=0; yIndex<nY; yIndex++) {
+            if (yIndex%interval==0)
+            {
+                grid = true;
+            }
+            else
+                grid = false;
+            for (int xIndex = 0; xIndex < nX; xIndex++)
+            {
+                if (grid==true)
+                {
+                    imageWriter.writePixel(xIndex, yIndex, color);
+                }
+                else if (xIndex%interval==0)
+                {
+                    imageWriter.writePixel(xIndex, yIndex, color);
+                }
             }
         }
         return this;
@@ -83,26 +96,25 @@ public class Camera implements Cloneable {
      * @return Ray from camera through the specified pixel
      */
     public Ray constructRay(int nX, int nY, int j, int i) {
-        // Calculate the center point of the view plane (Pc)
         Point centerPoint = location.add(vTo.scale(vpDistance));
-
-        // Calculate the pixel size (ratios)
         resolutionX = vpWidth / nX;
         resolutionY = vpHeight / nY;
 
-        // Calculate the coordinates of the pixel on the view plane
         double xj = (j - (double) (nX - 1) / 2) * resolutionX;
-        double yi = -(i - (double) (nY - 1) / 2) * resolutionY;
+        double yi = -((i - (double) (nY - 1) / 2) * resolutionY); // <-- FIXED LINE
 
-        // Adjust the center point to get the point on view plane through which the ray passes
         Point pixelPoint = centerPoint;
 
-        if (xj != 0) {
+        if (!Util.isZero(xj)) {
             pixelPoint = pixelPoint.add(vRight.scale(xj));
         }
 
-        if (yi != 0) {
+        if (!Util.isZero(yi)) {
             pixelPoint = pixelPoint.add(vUp.scale(yi));
+        }
+
+        if (pixelPoint.equals(location)) {
+            throw new IllegalArgumentException("Ray direction cannot be a zero vector (origin equals target)");
         }
 
         Vector direction = pixelPoint.subtract(location).normalize();
@@ -126,9 +138,18 @@ public class Camera implements Cloneable {
             return this;
         }
 
+        public Builder setImageWriter(ImageWriter imageWriter) {
+            camera.imageWriter = imageWriter;
+            return this;
+        }
+
         public Builder setRayTracer(Scene scene, RayTracerType rayTracer) {
             switch (rayTracer) {
                 case SIMPLE:
+                    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                    //need to make sure scene is not null
+                    //also please remember that this func exist when u walk through
+                    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                     camera.rayTracer = new SimpleRayTracer(scene);
                     break;
                 default:
@@ -221,16 +242,13 @@ public class Camera implements Cloneable {
          */
         public Builder setResolution(int nX, int nY) {
             if (nX <= 0 || nY <= 0) {
-                throw new IllegalArgumentException("high or width given for setting the View Plane are not positive values");
+                throw new IllegalArgumentException("Resolution values must be positive");
             }
-            camera.nY = nY;
             camera.nX = nX;
-            camera.imageWriter = new ImageWriter(nX, nY);
-            if (this.camera.rayTracer == null) {
-                this.camera.rayTracer = new SimpleRayTracer(new Scene(null));
-            }
+            camera.nY = nY;
+            camera.resolutionX = camera.vpWidth / nX;
+            camera.resolutionY = camera.vpHeight / nY;
             return this;
-
         }
 
         /**
@@ -240,67 +258,51 @@ public class Camera implements Cloneable {
          * @throws MissingResourceException if required parameters are missing
          */
         public Camera build() {
-            if (camera.nX <= 0 || camera.nY <= 0) {
-                throw new IllegalArgumentException("high or width given for setting the View Plane are not positive values");
-            }
-            final String MISSING_DATA_MSG = "missing rendering parameter";
-            if (camera.location == null) {
-                throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "location");
-            }
-            if (camera.vTo == null) {
-                throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "Vto");
-            }
-            if (camera.vUp == null) {
-                throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "Vup");
-            }
-            if (camera.vpHeight == 0.0) {
-                throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "hightVP");
-            }
-            if (camera.vpWidth == 0.0) {
-                throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "widthVP");
-            }
-            if (camera.vpDistance == 0.0) {
-                throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "distanceFromCamera");
-            }
+            final String MISSING_DATA_MSG = "Missing rendering parameter";
 
+            if (camera.location == null) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "location");
+            if (camera.vTo == null) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "vTo");
+            if (camera.vUp == null) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "vUp");
+            if (camera.vpHeight <= 0) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "vpHeight");
+            if (camera.vpWidth <= 0) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "vpWidth");
+            if (camera.vpDistance <= 0) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "vpDistance");
+            if (camera.nX <= 0 || camera.nY <= 0) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "Resolution");
+            if (camera.rayTracer == null) {
+                camera.rayTracer = new SimpleRayTracer(null);
+            }
             camera.imageWriter = new ImageWriter(camera.nX, camera.nY);
-            if (this.camera.rayTracer == null) {
-                this.camera.rayTracer = new SimpleRayTracer(new Scene(null));
-            }
-
-
-            try {
-                return (Camera) camera.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException("Cloning failed unexpectedly", e);
-            }
+            return new Camera(camera);
         }
+
     }
 
     /**
-     * Creates and returns a deep clone of this camera using the builder.
-     * @return a cloned camera
-     * @throws CloneNotSupportedException if cloning fails unexpectedly
+     * Deep copy constructor for Camera.
+     * @param other the Camera instance to copy from
      */
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        Camera cloned = new Camera();
-        Builder builder = cloned.getBuilder()
-                .setLocation(this.location)
-                .setDirection(this.vTo, this.vUp)
-                .setVpDistance(this.vpDistance)
-                .setVpSize(this.vpWidth, this.vpHeight);
-        if (this.nX > 0 && this.nY > 0) {
-            builder.setResolution(this.nX, this.nY);
-        }
-        return builder.camera;
+    public Camera(Camera other) {
+        this.location = other.location; // Point is probably immutable
+        this.vUp = other.vUp;
+        this.vTo = other.vTo;
+        this.vRight = other.vRight;
 
-        }
+        this.vpHeight = other.vpHeight;
+        this.vpWidth = other.vpWidth;
+        this.vpDistance = other.vpDistance;
+
+        this.resolutionX = other.resolutionX;
+        this.resolutionY = other.resolutionY;
+        this.nX = other.nX;
+        this.nY = other.nY;
+
+        this.imageWriter = new ImageWriter(nX, nY); // create a fresh one per build
+        this.rayTracer = other.rayTracer; // SimpleRayTracer is stateless, shallow copy is fine
+    }
+
 
     private void castRay(int Nx, int Ny, int column, int row){
         Color color = rayTracer.traceRay(constructRay(Nx,Ny,column,row));
         imageWriter.writePixel(column,row,color);
-
     }
 
 }
