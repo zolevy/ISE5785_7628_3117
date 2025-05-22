@@ -84,7 +84,7 @@ public class Polygon extends Geometry {
      * @param ray the ray to intersect with the polygon
      * @return null (not implemented)
      */
-    public List<Point> findIntersections(Ray ray) {
+    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
         return null;
     }
 }

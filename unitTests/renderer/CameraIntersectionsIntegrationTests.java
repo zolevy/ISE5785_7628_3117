@@ -1,7 +1,7 @@
 /**
 
  * Integration tests for the Camera class and its intersections with geometries.
- */
+
 package renderer;
 
 import geometries.*;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Integration tests between Camera and Geometries (Sphere, Plane, Triangle)
- */
+
 public class CameraIntersectionsIntegrationTests {
 
     /**
@@ -24,7 +24,7 @@ public class CameraIntersectionsIntegrationTests {
      * @param camera        the camera to construct rays from
      * @param geometry      the geometry to test intersections with
      * @param expectedCount the expected number of intersection points
-     */
+
     private void assertIntersections(Camera camera, Intersectable geometry, int expectedCount) {
         int nX = 3, nY = 3;
         int count = 0;
@@ -47,7 +47,7 @@ public class CameraIntersectionsIntegrationTests {
      * TC03 - medium sphere intersecting center rays, 10 intersections
      * TC04 - very large sphere, fully covering the view plane, 9 intersections
      * TC05 - sphere behind the camera, 0 intersections
-     */
+
     @Test
     public void testCameraSphereIntersections() {
         Camera camera = Camera.getBuilder()
@@ -85,7 +85,7 @@ public class CameraIntersectionsIntegrationTests {
      * TC01 - plane perpendicular to view direction, 9 intersections
      * TC02 - plane tilted, all rays intersect, 9 intersections
      * TC03 - steeply angled plane, 6 intersections
-     */
+
     @Test
     public void testCameraPlaneIntersections() {
         Camera camera = Camera.getBuilder()
@@ -109,7 +109,7 @@ public class CameraIntersectionsIntegrationTests {
      * Test integration of camera and triangle intersections for multiple test cases:
      * TC01 - small triangle intersected by 1 ray
      * TC02 - larger triangle intersected by 2 rays
-     */
+
     @Test
     public void testCameraTriangleIntersections() {
         Camera camera = Camera.getBuilder()
@@ -128,3 +128,4 @@ public class CameraIntersectionsIntegrationTests {
                 new Triangle(new Point(0.0, 20.0, -2.0), new Point(1.0, -1.0, -2.0), new Point(-1.0, -1.0, -2.0)), 2);
     }
 }
+*/

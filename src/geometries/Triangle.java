@@ -24,8 +24,8 @@ public class Triangle extends Polygon {
      * @return a list containing the intersection point, or null if there are no intersections
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
-        var intersections = plane.findIntersections(ray);
+    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
+        var intersections = plane.calculateIntersectionsHelper(ray);
         if (intersections == null)
             return null;
 
@@ -49,6 +49,6 @@ public class Triangle extends Polygon {
         if (s1 * s3 <= 0)
             return null;
 
-        return List.of(intersections.get(0));
+        return List.of(new Intersection(this, intersections.get(0).point));
     }
 }

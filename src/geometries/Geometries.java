@@ -10,7 +10,7 @@ import java.util.List;
  * This class implements the {@link Intersectable} interface and allows for
  * adding multiple geometries to be processed together.
  */
-public class Geometries implements Intersectable {
+public class Geometries extends Intersectable {
 
     /**
      * A list that holds all the geometries in the composite.
@@ -49,10 +49,10 @@ public class Geometries implements Intersectable {
      * @return a list of points where the ray intersects the geometries in the collection
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
-        List<Point> intersectionPoints = null;
+    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
+        List<Intersection> intersectionPoints = null;
         for (Intersectable geometry : geoComposite) {
-            List<Point> tempPoints = geometry.findIntersections(ray);
+            List<Intersection> tempPoints = geometry.calculateIntersectionsHelper(ray);
             if (tempPoints != null) {
                 if (intersectionPoints == null) {
                     intersectionPoints = new LinkedList<>();

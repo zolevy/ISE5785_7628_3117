@@ -62,7 +62,7 @@ public class Sphere extends RadialGeometry {
      * @return a list of intersection points, or null if there are no intersections
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
         Point P0 = ray.getHead();
         Vector v = ray.getDirection();
         Point O = this.center;
@@ -72,7 +72,8 @@ public class Sphere extends RadialGeometry {
             u = O.subtract(P0);
         } catch (IllegalArgumentException e) {
             // Ray starts at the center of the sphere
-            return List.of(P0.add(v.scale(this.radius)));
+            Point intersection = P0.add(v.scale(this.radius));
+            return List.of(new Intersection(this, intersection));
         }
 
         double tm = v.dotProduct(u);
@@ -82,21 +83,21 @@ public class Sphere extends RadialGeometry {
         if (dSquared > rSquared) return null;
 
         double thSquared = rSquared - dSquared;
-        if (Util.isZero(thSquared)) thSquared = 0; // for safety in sqrt
+        if (isZero(thSquared)) thSquared = 0; // for safety in sqrt
         if (thSquared < 0) return null;
 
         double th = Math.sqrt(thSquared);
-        double t1 = Util.alignZero(tm - th);
-        double t2 = Util.alignZero(tm + th);
+        double t1 = alignZero(tm - th);
+        double t2 = alignZero(tm + th);
 
-        if (t1 > 0 && t2 > 0)
-            return List.of(P0.add(v.scale(t1)), P0.add(v.scale(t2)));
+        List<Intersection> result = new ArrayList<>();
         if (t1 > 0)
-            return List.of(P0.add(v.scale(t1)));
+            result.add(new Intersection(this, P0.add(v.scale(t1))));
         if (t2 > 0)
-            return List.of(P0.add(v.scale(t2)));
+            result.add(new Intersection(this, P0.add(v.scale(t2))));
 
-        return null;
+        return result.isEmpty() ? null : result;
     }
+
 
 }

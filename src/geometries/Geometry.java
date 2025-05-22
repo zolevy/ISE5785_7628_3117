@@ -11,7 +11,17 @@ import java.util.List;
  * It defines the method for calculating the normal vector at a given point
  * and can be extended by specific geometric shapes.
  */
-public abstract class Geometry implements Intersectable {
+public abstract class Geometry extends Intersectable {
+    protected Color emission = Color.BLACK;
+
+    public Color getEmission() {
+        return emission;
+    }
+
+    public Geometry setEmission(Color newEmission) {
+        this.emission = newEmission;
+        return this;
+    }
 
     /**
      * Calculates the normal vector to the surface at a given point.

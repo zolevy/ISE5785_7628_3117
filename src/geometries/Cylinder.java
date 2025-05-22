@@ -72,7 +72,7 @@ public class Cylinder extends Tube {
      * @param ray the ray used to find intersections
      * @return a list of points where the ray intersects the cylinder
      */
-    public List<Point> findIntersections(Ray ray) {
+    public List<Intersection> calculateIntersectionsHelper(Ray ray) {
         return null;
     }
 }
