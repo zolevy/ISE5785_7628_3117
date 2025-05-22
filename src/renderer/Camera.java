@@ -34,10 +34,10 @@ public class Camera implements Cloneable {
     private int nY = 1;
 
     /** Image writer for rendering pixels */
-    ImageWriter imageWriter;
+    private ImageWriter imageWriter;
 
     /** Ray tracer for computing color of rays */
-    RayTracerBase rayTracer;
+    private RayTracerBase rayTracer;
 
     /**
      * Renders the image by casting rays through each pixel.
@@ -215,9 +215,15 @@ public class Camera implements Cloneable {
          * @return this builder instance
          */
         public Builder setDirection(Point target, Vector tempVup) {
-            camera.vTo = target.subtract(camera.location).normalize();
-            camera.vRight = tempVup.crossProduct(camera.vTo).normalize();
-            camera.vUp = camera.vTo.crossProduct(camera.vRight);
+            Vector direction;
+            try {
+                direction = target.subtract(camera.location).normalize();
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("camera location can't be at target");
+            }
+            camera.vRight = direction.crossProduct(tempVup).normalize();
+            camera.vTo = direction;
+            camera.vUp = camera.vRight.crossProduct(direction);
             return this;
         }
 
@@ -297,12 +303,17 @@ public class Camera implements Cloneable {
             if (camera.vpHeight <= 0) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "vpHeight");
             if (camera.vpWidth <= 0) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "vpWidth");
             if (camera.vpDistance <= 0) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "vpDistance");
-            if (camera.nX <= 0 || camera.nY <= 0) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "Resolution");
+            if (camera.nX <= 0 || camera.nY <= 0) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "resolution");
             if (camera.rayTracer == null) {
-                camera.rayTracer = new SimpleRayTracer(null);
+                throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "rayTracer"); }
+            if (camera.imageWriter ==null) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "imageWriter");
+            try {
+                return (Camera) camera.clone();
+            } catch (CloneNotSupportedException e) {
+                // TODO Auto-generated catch block
+                //e.printStackTrace();
+                return null;
             }
-            camera.imageWriter = new ImageWriter(camera.nX, camera.nY);
-            return new Camera(camera);
         }
 
     }

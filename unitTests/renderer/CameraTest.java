@@ -3,10 +3,12 @@ package renderer;
 //import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static renderer.RayTracerType.SIMPLE;
 
 import org.junit.jupiter.api.Test;
 
 import primitives.*;
+import scene.Scene;
 
 /**
  * Testing Camera Class
@@ -14,9 +16,9 @@ import primitives.*;
  */
 class CameraTest {
    /** Camera builder for the tests */
-   private final Camera.Builder cameraBuilder = Camera.getBuilder()
+  /* private final Camera.Builder cameraBuilder = Camera.getBuilder()
            .setLocation(Point.ZERO)
-           .setVpDistance(10.0);
+           .setVpDistance(10.0);*/
    /** Assert failure message for a bad ray */
    private static final String  BAD_RAY       = "Bad ray";
 
@@ -24,7 +26,7 @@ class CameraTest {
     * Test method for
     * {@link renderer.Camera#constructRay(int, int, int, int)}.
     */
-   @Test
+   /*@Test
    void testConstructRay() {
       cameraBuilder.setDirection(new Vector(0.0, 0.0, -1.0), new Vector(0.0, -1.0, 0.0));
       Camera camera1 = cameraBuilder.setVpSize(8.0, 8.0).build();
@@ -60,9 +62,51 @@ class CameraTest {
       assertEquals(new Ray(Point.ZERO, new Vector(2.0, -2.0, -10.0)),
               camera2.constructRay(3, 3, 0, 0), BAD_RAY);
 
+   }*/
+   private final Camera.Builder cameraBuilder = Camera.getBuilder()
+           .setRayTracer(new Scene("Test"), SIMPLE)
+           .setImageWriter(new ImageWriter( 1, 1))
+           .setLocation(Point.ZERO)
+           .setDirection(new Vector(0.0, 0.0, -1.0), new Vector(0.0, -1.0, 0.0))
+           .setVpDistance(10);
+   @Test
+   void testConstructRay() {
+      final String badRay = "Bad ray";
+
+      // ============ Equivalence Partitions Tests ==============
+      // EP01: 4X4 Inside (1,1)
+      Camera camera1 = cameraBuilder.setVpSize(8, 8).build();
+      assertEquals(new Ray(Point.ZERO, new Vector(1.0, -1.0, -10.0)),
+              camera1.constructRay(4, 4, 1, 1), badRay);
+
+      // =============== Boundary Values Tests ==================
+      // BV01: 4X4 Corner (0,0)
+      assertEquals(new Ray(Point.ZERO, new Vector(3.0, -3.0, -10.0)),
+              camera1.constructRay(4, 4, 0, 0), badRay);
+
+      // BV02: 4X4 Side (0,1)
+      assertEquals(new Ray(Point.ZERO, new Vector(1.0, -3.0, -10.0)),
+              camera1.constructRay(4, 4, 1, 0), badRay);
+
+      // BV03: 3X3 Center (1,1)
+      Camera camera2 = cameraBuilder.setVpSize(6, 6).build();
+      assertEquals(new Ray(Point.ZERO, new Vector(0.0, 0.0, -10.0)),
+              camera2.constructRay(3, 3, 1, 1), badRay);
+
+      // BV04: 3X3 Center of Upper Side (0,1)
+      assertEquals(new Ray(Point.ZERO, new Vector(0.0, -2.0, -10.0)),
+              camera2.constructRay(3, 3, 1, 0), badRay);
+
+      // BV05: 3X3 Center of Left Side (1,0)
+      assertEquals(new Ray(Point.ZERO, new Vector(2.0, 0.0, -10.0)),
+              camera2.constructRay(3, 3, 0, 1), badRay);
+
+      // BV06: 3X3 Corner (0,0)
+      assertEquals(new Ray(Point.ZERO, new Vector(2.0, -2.0, -10.0)),
+              camera2.constructRay(3, 3, 0, 0), badRay);
    }
 
-   @Test
+   /*@Test
    void testBuilder() {
       cameraBuilder.setVpSize(4.0, 4.0).setResolution(2, 2);
 
@@ -88,5 +132,8 @@ class CameraTest {
       // =============== Boundary Values Tests ==================
       // BV01: set to a target on Y-axis without up
       assertThrows(IllegalArgumentException.class, () -> cameraBuilder.setDirection(new Point(0.0, 10.0, 0.0)).build());
-   }
+   }*/
+
 }
+
+

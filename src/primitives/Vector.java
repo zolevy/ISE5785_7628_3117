@@ -18,9 +18,10 @@ public class Vector extends Point {
      * @param z the z-coordinate of the vector
      */
     public Vector(Double x, Double y, Double z) {
+        //this(new Double3(x,y,z));
         super(x, y, z);
         if (x == 0 && y == 0 && z == 0) {
-            throw new IllegalArgumentException("Vector cannot be created from Point(0,0,0)");
+           throw new IllegalArgumentException("Vector cannot be created from Point(0,0,0)");
         }
     }
 
