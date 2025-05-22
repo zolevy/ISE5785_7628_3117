@@ -1,4 +1,5 @@
 /**
+
  * Integration tests for the Camera class and its intersections with geometries.
  */
 package renderer;

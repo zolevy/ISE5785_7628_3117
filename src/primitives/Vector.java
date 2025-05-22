@@ -17,14 +17,11 @@ public class Vector extends Point {
      * @param y the y-coordinate of the vector
      * @param z the z-coordinate of the vector
      */
-    public Vector(Double x, Double y, Double z) {
-        //this(new Double3(x,y,z));
-        super(x, y, z);
-        if (x == 0 && y == 0 && z == 0) {
-           throw new IllegalArgumentException("Vector cannot be created from Point(0,0,0)");
-        }
+    public Vector(double x, double y, double z) {
+        this(new Double3(x, y, z));
+        if (xyz.equals(Double3.ZERO))
+            throw new IllegalArgumentException("Zero vector is not allowed");
     }
-
     /**
      * Constructs a vector from a Double3 object.
      * Throws an exception if the vector is the zero vector (0,0,0).

@@ -170,22 +170,27 @@ public class Camera implements Cloneable {
             camera.imageWriter = imageWriter;
             return this;
         }
-
         /**
-         * Sets the ray tracer and scene for the camera.
-         *
-         * @param scene     the scene to trace
-         * @param rayTracer the ray tracer type to use
-         * @return this builder instance
+         * Ray tracer setter
+         * @param  tracer to use
+         * @return        builder itself - for chaining
          */
-        public Builder setRayTracer(Scene scene, RayTracerType rayTracer) {
-            switch (rayTracer) {
-                case SIMPLE:
-                    camera.rayTracer = new SimpleRayTracer(scene);
-                    break;
-                default:
-                    camera.rayTracer = null;
-            }
+        public Builder setRayTracer(RayTracerBase tracer) {
+            camera.rayTracer = tracer;
+            return this;
+        }
+        /**
+         * Ray tracer setter
+         * @param  scene scene data container
+         * @param  type  ray tracer type to use
+         * @return       builder itself - for chaining
+         */
+        public Builder setRayTracer(Scene scene, RayTracerType type) {
+            if (scene == null) scene = new Scene("fake");
+            camera.rayTracer = switch (type) {
+                case SIMPLE -> new SimpleRayTracer(scene);
+                default -> throw new IllegalArgumentException("Unexpected tracer type: " + type);
+            };
             return this;
         }
 
@@ -285,6 +290,8 @@ public class Camera implements Cloneable {
             camera.nY = nY;
             camera.resolutionX = camera.vpWidth / nX;
             camera.resolutionY = camera.vpHeight / nY;
+            ImageWriter imageWriter = new ImageWriter(nX,nY);
+            setImageWriter(imageWriter);
             return this;
         }
 
@@ -306,13 +313,13 @@ public class Camera implements Cloneable {
             if (camera.nX <= 0 || camera.nY <= 0) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "resolution");
             if (camera.rayTracer == null) {
                 throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "rayTracer"); }
-            if (camera.imageWriter ==null) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "imageWriter");
+            if (camera.imageWriter == null) throw new MissingResourceException(MISSING_DATA_MSG, Camera.class.getName(), "imageWriter");
             try {
                 return (Camera) camera.clone();
             } catch (CloneNotSupportedException e) {
                 // TODO Auto-generated catch block
                 //e.printStackTrace();
-                return null;
+                return camera;
             }
         }
 
