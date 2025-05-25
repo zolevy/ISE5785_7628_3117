@@ -118,4 +118,30 @@ class RenderTests {
               .printGrid(100, new Color(YELLOW)) //
               .writeToImage("xml render test");
    }
+
+   @Test
+   void renderMultiColorTestTwo() {
+      Scene scene = new Scene("Multi color two").setAmbientLight(new AmbientLight(new Color(WHITE)));
+      scene.geometries //
+              .add(// center
+                      new Sphere( 50.0, new Point(0.0, 0.0, -100.0)).
+                      setMaterial((new Material()).setkA(new Double3(0.4))),
+                      // up left
+                      new Triangle(new Point(-100.0, 0.0, -100.0), new Point(0.0, 100.0, -100.0), new Point(-100.0, 100.0, -100.0)).
+                              setMaterial((new Material()).setkA(new Double3(0.0,0.8,0.0))),
+                      // down left
+                      new Triangle(new Point(-100.0, 0.0, -100.0), new Point(0.0, -100.0, -100.0), new Point(-100.0, -100.0, -100.0)).
+                              setMaterial((new Material()).setkA(new Double3(0.8,0.0,0.0))),
+                      // down right
+                      new Triangle(new Point(100.0, 0.0, -100.0), new Point(0.0, -100.0, -100.0), new Point(100.0, -100.0, -100.0)).
+                              setMaterial((new Material()).setkA(new Double3(0.0,0.0,0.8))));
+
+      camera //
+              .setRayTracer(scene, RayTracerType.SIMPLE) //
+              .setResolution(1000, 1000) //
+              .build() //
+              .renderImage() //
+              .printGrid(100, new Color(WHITE)) //
+              .writeToImage("color render test two");
+   }
 }

@@ -13,6 +13,16 @@ import java.util.List;
  */
 public abstract class Geometry extends Intersectable {
     protected Color emission = Color.BLACK;
+    private Material material = new Material();
+
+    public Geometry setMaterial(Material material) {
+        this.material = material;
+        return this;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
 
     public Color getEmission() {
         return emission;
