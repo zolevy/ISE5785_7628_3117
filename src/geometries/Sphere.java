@@ -99,5 +99,4 @@ public class Sphere extends RadialGeometry {
         return result.isEmpty() ? null : result;
     }
 
-
 }
