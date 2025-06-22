@@ -16,6 +16,31 @@ public class Material {
     /** Shininess factor for specular reflection. Default is 0 (no shininess). */
     public int nsh = 0;
 
+    public Double3 kT = Double3.ZERO; // Transmission coefficient (not used in this example)
+
+    public Double3 kR = Double3.ZERO; // Reflection coefficient (not used in this example)
+
+    public Material setkT(Double3 kT) {
+        this.kT = kT;
+        return this;
+    }
+
+    public Material setkT(Double kT) {
+        this.kT = new Double3(kT);
+        return this;
+    }
+
+    public Material setkR(Double kR) {
+        this.kR = new Double3(kR);
+        return this;
+    }
+
+    public Material setkR(Double3 kR) {
+        this.kR = kR;
+        return this;
+    }
+
+
     /**
      * Sets the specular coefficient using a Double3 value.
      *

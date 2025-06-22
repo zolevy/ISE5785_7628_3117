@@ -1,21 +1,32 @@
 package lighting;
+
 import primitives.*;
 
 /**
- * Represents a point light source emitting light from a specific position in space.
- * Supports attenuation with distance using constant, linear, and quadratic factors.
+ * Represents a point light source that emits light uniformly in all directions from a specific position in space.
+ * <p>
+ * Supports distance attenuation using constant, linear, and quadratic factors to simulate the weakening
+ * of light over distance.
  */
 public class PointLight extends Light implements LightSource {
+
+    /** The position of the point light in 3D space */
     protected final Point position;
+
+    /** Constant attenuation factor (default 1) */
     private double kC = 1.0;
+
+    /** Linear attenuation factor (default 0) */
     private double kL = 0.0;
+
+    /** Quadratic attenuation factor (default 0) */
     private double kQ = 0.0;
 
     /**
-     * Constructs a PointLight with specified intensity and position.
+     * Constructs a point light source with a given intensity and position.
      *
-     * @param intensity the color/intensity of the light
-     * @param position  the position of the light source in space
+     * @param intensity the base light color/intensity
+     * @param position  the 3D position of the light source
      */
     public PointLight(Color intensity, Point position) {
         super(intensity);
@@ -23,10 +34,10 @@ public class PointLight extends Light implements LightSource {
     }
 
     /**
-     * Sets the constant attenuation factor.
+     * Sets the constant attenuation factor (kC).
      *
-     * @param kc constant factor
-     * @return this PointLight instance for chaining
+     * @param kc the constant attenuation coefficient
+     * @return the current {@code PointLight} instance (for method chaining)
      */
     public PointLight setkC(double kc) {
         this.kC = kc;
@@ -34,10 +45,10 @@ public class PointLight extends Light implements LightSource {
     }
 
     /**
-     * Sets the linear attenuation factor.
+     * Sets the linear attenuation factor (kL).
      *
-     * @param kl linear factor
-     * @return this PointLight instance for chaining
+     * @param kl the linear attenuation coefficient
+     * @return the current {@code PointLight} instance (for method chaining)
      */
     public PointLight setKl(double kl) {
         this.kL = kl;
@@ -45,10 +56,10 @@ public class PointLight extends Light implements LightSource {
     }
 
     /**
-     * Sets the quadratic attenuation factor.
+     * Sets the quadratic attenuation factor (kQ).
      *
-     * @param kq quadratic factor
-     * @return this PointLight instance for chaining
+     * @param kq the quadratic attenuation coefficient
+     * @return the current {@code PointLight} instance (for method chaining)
      */
     public PointLight setKq(double kq) {
         this.kQ = kq;
@@ -56,10 +67,15 @@ public class PointLight extends Light implements LightSource {
     }
 
     /**
-     * Calculates the light intensity at point p, considering distance attenuation.
+     * Calculates and returns the attenuated light intensity at a given point in the scene.
+     * <p>
+     * The intensity is reduced based on the distance from the light source using the formula:
+     * <pre>
+     *     intensity / (kC + kL*d + kQ*d²)
+     * </pre>
      *
-     * @param p the point to calculate intensity for
-     * @return the attenuated color intensity at point p
+     * @param p the point at which to calculate the light intensity
+     * @return the attenuated {@link Color} intensity at point {@code p}
      */
     @Override
     public Color getIntensity(Point p) {
@@ -70,10 +86,11 @@ public class PointLight extends Light implements LightSource {
     }
 
     /**
-     * Returns the normalized vector from the light position to point p.
+     * Returns the normalized direction vector from the light source to a given point.
      *
      * @param p the point in the scene
-     * @return normalized direction vector from the light to p, or null if p equals position
+     * @return a normalized {@link Vector} pointing from the light source to point {@code p},
+     *         or {@code null} if {@code p} equals the light's position
      */
     @Override
     public Vector getL(Point p) {
@@ -82,5 +99,16 @@ public class PointLight extends Light implements LightSource {
         } catch (IllegalArgumentException e) {
             return null;
         }
+    }
+
+    /**
+     * Returns the distance between the light source and a given point.
+     *
+     * @param point the point to calculate distance to
+     * @return the distance between the light source and point {@code point}
+     */
+    @Override
+    public double getDistance(Point point) {
+        return position.distance(point);
     }
 }

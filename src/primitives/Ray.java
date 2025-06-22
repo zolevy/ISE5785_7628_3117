@@ -64,6 +64,25 @@ public class Ray {
         this.direction = direction.normalize();
     }
 
+    /*public Ray(Point head, Vector direction, double delta, Vector n) {
+        if (isZero(direction.dotProduct(n))) {
+            this.head = head;
+        } else {
+            double nl = direction.dotProduct(n);
+            Vector offset = n.scale(nl > 0 ? delta : -delta);
+            this.head = head.add(offset);
+        }
+        this.direction = direction.normalize();
+    }*/
+    public Ray(Point head, Vector direction, double delta, Vector n) {
+        this.direction = direction.normalize();
+        double nd = n.dotProduct(this.direction);
+
+        Vector offset = n.scale(nd > 0 ? delta : -delta);
+        this.head = head.add(offset);
+    }
+
+
     /**
      * Compares this ray to the specified object for equality.
      * Two rays are considered equal if their head and direction are equal.
