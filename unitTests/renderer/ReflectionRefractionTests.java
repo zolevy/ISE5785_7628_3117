@@ -1,6 +1,8 @@
 package renderer;
 
 import static java.awt.Color.*;
+import static renderer.RayTracerType.GRID;
+import static renderer.RayTracerType.SIMPLE;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +22,7 @@ class ReflectionRefractionTests {
 
    private final Scene scene = new Scene("Test scene");
    private final Camera.Builder cameraBuilder = Camera.getBuilder()
-           .setRayTracer(scene, RayTracerType.SIMPLE);
+           .setRayTracer(scene, SIMPLE);
 
    @Test
    void twoSpheres() {
@@ -36,6 +38,7 @@ class ReflectionRefractionTests {
       );
 
       cameraBuilder
+
               .setLocation(new Point(0.0, 0.0, 1000.0))
               .setDirection(Point.ZERO, Vector.AXIS_Y)
               .setVpDistance(1000).setVpSize(150, 150)
@@ -132,6 +135,7 @@ class ReflectionRefractionTests {
       ));
 
       cameraBuilder
+
               .setLocation(new Point(0.0, 0.0, 700.0))
               .setDirection(Point.ZERO, Vector.AXIS_Y)
               .setVpDistance(700.0).setVpSize(200.0, 200.0)
@@ -552,8 +556,9 @@ class ReflectionRefractionTests {
               .setDirection(new Point(0.0, -20.0, 0.0), Vector.AXIS_Y)
               .setVpDistance(250.0).setVpSize(200.0, 200.0)
               .setResolution(800, 800)
+              .setRayTracer(scene, GRID)
               .build()
               .renderImage()
-              .writeToImage("newbonusComplexScene");
+              .writeToImage("new4bonusComplexScene");
    }
 }
