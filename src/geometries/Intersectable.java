@@ -9,7 +9,35 @@ import java.util.List;
  * Classes implementing this interface must provide a method to find intersection points with a ray.
  */
 public abstract class Intersectable {
+    // Static flag to enable/disable AABB optimization globally
+    public static boolean useAABB = false;
 
+    // Cached bounding box, computed lazily
+    private AABB boundingBox = null;
+
+    /**
+     * Compute bounding box lazily if needed and caching it.
+     */
+    protected void computeBoundingBoxIfNeeded() {
+        if (useAABB && boundingBox == null) {
+            boundingBox = createBoundingBox();
+        }
+    }
+
+    /**
+     * Returns the cached bounding box, or computes it if needed.
+     * Returns null if useAABB is false.
+     */
+    public AABB getBoundingBox() {
+        if (!useAABB) return null;
+        computeBoundingBoxIfNeeded();
+        return boundingBox;
+    }
+
+    /**
+     * Abstract method for subclasses to implement specific bounding box calculation.
+     */
+    protected abstract AABB createBoundingBox();
     /**
      * Finds the intersection points between a ray and the object.
      *

@@ -56,6 +56,19 @@ public class Sphere extends RadialGeometry {
     }
 
     /**
+     * Creates the axis-aligned bounding box (AABB) for the sphere.
+     *
+     * @return AABB enclosing the sphere.
+     */
+    @Override
+    public AABB createBoundingBox() {
+        Point min = new Point(center.getX() - radius, center.getY() - radius, center.getZ() - radius);
+        Point max = new Point(center.getX() + radius, center.getY() + radius, center.getZ() + radius);
+        return new AABB(min, max);
+    }
+
+
+    /**
      * Finds the intersection points of a ray with the sphere.
      *
      * @param ray the ray to intersect with the sphere

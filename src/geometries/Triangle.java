@@ -16,6 +16,26 @@ public class Triangle extends Polygon {
     public Triangle(Point... vertices) {
         super(vertices);
     }
+    @Override
+/**
+ * Creates the axis-aligned bounding box (AABB) for the triangle.
+ *
+ * @return AABB enclosing the triangle.
+ */
+    public AABB createBoundingBox() {
+        double minX = Math.min(Math.min(vertices.get(1).getX(), vertices.get(2).getX()), vertices.get(3).getX());
+        double minY = Math.min(Math.min(vertices.get(1).getY(), vertices.get(2).getY()), vertices.get(3).getY());
+        double minZ = Math.min(Math.min(vertices.get(1).getZ(), vertices.get(2).getZ()), vertices.get(3).getZ());
+
+        double maxX = Math.max(Math.max(vertices.get(1).getX(), vertices.get(2).getX()), vertices.get(3).getX());
+        double maxY = Math.max(Math.max(vertices.get(1).getY(), vertices.get(2).getY()), vertices.get(3).getY());
+        double maxZ = Math.max(Math.max(vertices.get(1).getZ(), vertices.get(2).getZ()), vertices.get(3).getZ());
+
+        Point min = new Point(minX, minY, minZ);
+        Point max = new Point(maxX, maxY, maxZ);
+
+        return new AABB(min, max);
+    }
 
     /**
      * Finds the intersection points of a ray with the triangle.

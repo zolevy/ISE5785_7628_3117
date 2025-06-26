@@ -27,6 +27,33 @@ public class Point {
     }
 
     /**
+     * Returns the X coordinate of this point/vector.
+     *
+     * @return the X coordinate as a double
+     */
+    public double getX() {
+        return xyz.d1();
+    }
+
+    /**
+     * Returns the Y coordinate of this point/vector.
+     *
+     * @return the Y coordinate as a double
+     */
+    public double getY() {
+        return xyz.d2();
+    }
+
+    /**
+     * Returns the Z coordinate of this point/vector.
+     *
+     * @return the Z coordinate as a double
+     */
+    public double getZ() {
+        return xyz.d3();
+    }
+
+    /**
      * Constructs a point from a Double3 object.
      *
      * @param point the Double3 object representing the coordinates

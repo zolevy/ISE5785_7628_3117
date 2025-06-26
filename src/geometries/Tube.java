@@ -27,6 +27,18 @@ public class Tube extends RadialGeometry {
     }
 
     /**
+    * Creates the axis-aligned bounding box (AABB) for the tube.
+    * Since the tube extends infinitely along its axis, bounding box is undefined.
+    *
+    * @return AABB for the tube or null if not bounded.
+    */
+    @Override
+    public AABB createBoundingBox() {
+        // Tube is infinite along its axis; no finite bounding box.
+        return null;
+    }
+
+    /**
      * Computes the normal vector to the surface of the tube at a given point.
      * The normal is perpendicular to the axis and points outward from the surface.
      *

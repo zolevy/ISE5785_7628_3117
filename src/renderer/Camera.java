@@ -3,7 +3,9 @@ package renderer;
 import primitives.*;
 import scene.Scene;
 
+import java.util.LinkedList;
 import java.util.MissingResourceException;
+import java.util.stream.IntStream;
 
 /**
  * The {@code Camera} class represents a virtual camera in 3D space.
@@ -17,35 +19,56 @@ import java.util.MissingResourceException;
  * and optional rendering improvements.
  */
 public class Camera implements Cloneable {
-    /** Location of the camera in 3D space */
+    /**
+     * Location of the camera in 3D space
+     */
     private Point location = null;
 
-    /** Up, to, and right direction vectors of the camera */
+    /**
+     * Up, to, and right direction vectors of the camera
+     */
     private Vector vUp = null, vTo = null, vRight = null;
 
-    /** View plane height, width and distance from the camera */
+    /**
+     * View plane height, width and distance from the camera
+     */
     private double vpHeight = 0.0;
     private double vpWidth = 0.0;
     private double vpDistance = 0.0;
     private boolean enableImprovement = false;
 
-    /** Private constructor for use by the builder */
+    /**
+     * Private constructor for use by the builder
+     */
     private Camera() {
     }
 
-    /** View plane resolution in X and Y directions */
+    /**
+     * View plane resolution in X and Y directions
+     */
     private double resolutionX = 0.0;
     private double resolutionY = 0.0;
 
-    /** Number of pixels in width and height of view plane */
+    /**
+     * Number of pixels in width and height of view plane
+     */
     private int nX = 1;
     private int nY = 1;
 
-    /** Image writer for rendering pixels */
+    /**
+     * Image writer for rendering pixels
+     */
     private ImageWriter imageWriter;
 
-    /** Ray tracer for computing color of rays */
+    /**
+     * Ray tracer for computing color of rays
+     */
     private RayTracerBase rayTracer;
+
+    private int threadsCount = 0; // -2 auto, -1 range/stream, 0 no threads, 1+ number of threadsprivate
+    static final int SPARE_THREADS = 2; // Spare threads if trying to use all the coresprivate
+    double printInterval = 0; // printing progress percentage interval (0 – no printing)
+    private PixelManager pixelManager; // pixel manager object
 
     /**
      * Renders the image by casting rays through each pixel.
@@ -53,11 +76,48 @@ public class Camera implements Cloneable {
      * @return this camera instance
      */
     public Camera renderImage() {
+        pixelManager = new PixelManager(nY, nX, printInterval);
+        return switch (threadsCount) {
+            case 0 -> renderImageNoThreads();
+            case -1 -> renderImageStream();
+            default -> renderImageRawThreads();
+        };
+    }
+
+    public Camera renderImageNoThreads()
+    {
         for (int i = 0; i < nY; ++i) {
             for (int j = 0; j < nX; ++j) {
                 castRay(nX, nY, j, i);
             }
         }
+        return this;
+    }
+
+    /**
+     * Render image using multi-threading by creating and running raw threads* @return the camera object itself
+     */
+    private Camera renderImageRawThreads() {
+        var threads = new LinkedList<Thread>();
+        while (threadsCount-- > 0)
+            threads.add(new Thread(() -> {
+                PixelManager.Pixel pixel;
+                while ((pixel = pixelManager.nextPixel()) != null)
+                    castRay(imageWriter.nX(), imageWriter.nY(), pixel.col(), pixel.row());
+            }));
+        for (var thread : threads) thread.start();
+        try {
+            for (var thread : threads) thread.join();
+        } catch (InterruptedException ignore) {}
+        return this;
+    }
+    /**
+     * Render image using multi-threading by creating and running raw threads* @return the camera object itself
+     */
+    public Camera renderImageStream() {
+        IntStream.range(0, nY).parallel() //
+                .forEach(i -> IntStream.range(0, nX).parallel() //
+                        .forEach(j -> castRay(imageWriter.nX(), imageWriter.nY(), j, i)));
         return this;
     }
 
@@ -160,6 +220,20 @@ public class Camera implements Cloneable {
      */
     public static class Builder {
         final private Camera camera = new Camera();
+
+        public Builder setMultithreading(int threads) {
+            if (threads < -2) throw new IllegalArgumentException("Multithreading must be -2 or higher");if (threads >= -1) camera.threadsCount = threads;
+            else { // == -2
+                int cores = Runtime.getRuntime().availableProcessors() - SPARE_THREADS;
+                camera.threadsCount = cores <= 2 ? 1 : cores;
+            }
+            return this;
+        }
+        /*public Builder setDebugPrint(double interval) {
+            if (interval < 0) throw new IllegalArgumentException(“Interval value must be non-negative"); +
+                    "camera.printInterval = interval";
+            return this;
+        }*/
 
         /**
          * Sets the location of the camera.
@@ -400,6 +474,7 @@ public class Camera implements Cloneable {
         }
 
         imageWriter.writePixel(column, row, color);
+        pixelManager.pixelDone();
     }
 
 }

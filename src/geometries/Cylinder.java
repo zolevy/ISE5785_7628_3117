@@ -33,6 +33,38 @@ public class Cylinder extends Tube {
         this.height = height;
     }
 
+/**
+ * Creates the axis-aligned bounding box (AABB) for the cylinder.
+ *
+ * @return AABB enclosing the cylinder.
+ */
+@Override
+    public AABB createBoundingBox() {
+        Point base = axis.getHead();
+        Vector axisDir = axis.getDirection().normalize();
+
+        // Calculate min and max coordinates considering the radius and height
+        double radius = this.radius;
+        double height = this.height;
+
+        // To compute bounding box we consider the cylinder's axis and radius in all directions.
+        // Find two points: base and top of the cylinder axis
+        Point top = base.add(axisDir.scale(height));
+
+        double minX = Math.min(base.getX(), top.getX()) - radius;
+        double minY = Math.min(base.getY(), top.getY()) - radius;
+        double minZ = Math.min(base.getZ(), top.getZ()) - radius;
+
+        double maxX = Math.max(base.getX(), top.getX()) + radius;
+        double maxY = Math.max(base.getY(), top.getY()) + radius;
+        double maxZ = Math.max(base.getZ(), top.getZ()) + radius;
+
+        Point min = new Point(minX, minY, minZ);
+        Point max = new Point(maxX, maxY, maxZ);
+
+        return new AABB(min, max);
+    }
+
     /**
      * Computes the normal vector to the surface of the cylinder at a given point.
      * The normal is determined based on the location of the point:

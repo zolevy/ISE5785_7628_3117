@@ -66,6 +66,17 @@ public class Plane extends Geometry {
         this.q = q;
         this.normal = normal.normalize();
     }
+    @Override
+/**
+ * Creates the axis-aligned bounding box (AABB) for the plane.
+ * Since the plane is infinite, returns a bounding box covering the entire scene or null.
+ *
+ * @return AABB for the plane or null if not bounded.
+ */
+    public AABB createBoundingBox() {
+        // Typically planes are infinite, so bounding box can be null or extremely large.
+        return null;
+    }
 
     /**
      * Returns the normal vector to the plane at a given point.

@@ -28,6 +28,36 @@ public class Polygon extends Geometry {
      * The number of vertices in the polygon.
      */
     private final int size;
+    @Override
+/**
+ * Creates the axis-aligned bounding box (AABB) for the polygon.
+ *
+ * @return AABB enclosing the polygon.
+ */
+    public AABB createBoundingBox() {
+        double minX = Double.POSITIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double minZ = Double.POSITIVE_INFINITY;
+
+        double maxX = Double.NEGATIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
+        double maxZ = Double.NEGATIVE_INFINITY;
+
+        for (Point vertex : vertices) {
+            minX = Math.min(minX, vertex.getX());
+            minY = Math.min(minY, vertex.getY());
+            minZ = Math.min(minZ, vertex.getZ());
+
+            maxX = Math.max(maxX, vertex.getX());
+            maxY = Math.max(maxY, vertex.getY());
+            maxZ = Math.max(maxZ, vertex.getZ());
+        }
+
+        Point min = new Point(minX, minY, minZ);
+        Point max = new Point(maxX, maxY, maxZ);
+
+        return new AABB(min, max);
+    }
 
     /**
      * Polygon constructor based on vertices list. The list must be ordered by edge

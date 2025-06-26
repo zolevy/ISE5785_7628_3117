@@ -20,14 +20,14 @@ public class Geometries extends Intersectable {
     /**
      * Default constructor to create an empty collection of geometries.
      */
-    public Geometries (){}
+    public Geometries() {}
 
     /**
      * Constructs a collection of geometries with the specified geometries.
      *
      * @param geometries the geometries to be added to the collection
      */
-    public Geometries (Intersectable... geometries){
+    public Geometries(Intersectable... geometries) {
         add(geometries);
     }
 
@@ -51,7 +51,13 @@ public class Geometries extends Intersectable {
     @Override
     public List<Intersection> calculateIntersectionsHelper(Ray ray) {
         List<Intersection> intersectionPoints = null;
+
         for (Intersectable geometry : geoComposite) {
+            // Use bounding box check only if AABB optimization is enabled
+            AABB box = geometry.getBoundingBox();
+            if (box != null && !box.intersects(ray)) {
+                continue; // Ray doesn't hit the bounding box – skip geometry
+            }
             List<Intersection> tempPoints = geometry.calculateIntersectionsHelper(ray);
             if (tempPoints != null) {
                 if (intersectionPoints == null) {
@@ -61,5 +67,52 @@ public class Geometries extends Intersectable {
             }
         }
         return intersectionPoints;
+    }
+
+
+    /**
+     * Creates the axis-aligned bounding box (AABB) that contains all bounding boxes of
+     * the geometries in the collection.
+     *
+     * @return AABB enclosing all geometries or null if none have bounding boxes.
+     */
+    @Override
+    public AABB createBoundingBox() {
+        if (geoComposite.isEmpty()) {
+            return null;
+        }
+
+        double minX = Double.POSITIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double minZ = Double.POSITIVE_INFINITY;
+
+        double maxX = Double.NEGATIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
+        double maxZ = Double.NEGATIVE_INFINITY;
+
+        for (Intersectable geometry : geoComposite) {
+            AABB box = geometry.createBoundingBox();
+            if (box == null) continue;
+
+            Point bMin = box.min;
+            Point bMax = box.max;
+
+            if (bMin.getX() < minX) minX = bMin.getX();
+            if (bMin.getY() < minY) minY = bMin.getY();
+            if (bMin.getZ() < minZ) minZ = bMin.getZ();
+
+            if (bMax.getX() > maxX) maxX = bMax.getX();
+            if (bMax.getY() > maxY) maxY = bMax.getY();
+            if (bMax.getZ() > maxZ) maxZ = bMax.getZ();
+        }
+
+        if (minX == Double.POSITIVE_INFINITY) {
+            return null;
+        }
+
+        Point min = new Point(minX, minY, minZ);
+        Point max = new Point(maxX, maxY, maxZ);
+
+        return new AABB(min, max);
     }
 }
