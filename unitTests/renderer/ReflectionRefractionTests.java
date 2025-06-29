@@ -74,6 +74,7 @@ class ReflectionRefractionTests {
               .setDirection(Point.ZERO, Vector.AXIS_Y)
               .setVpDistance(10000).setVpSize(2500, 2500)
               .setResolution(500, 500)
+              .setRayTracer(scene, SIMPLE)
               .build()
               .renderImage()
               .writeToImage("reflectionTwoSpheresMirrored");
