@@ -74,7 +74,7 @@ class TeapotTest {
      */
     void teapot3() {
         prepareTeapot() //
-                .enableBVH() //
+                //.enableBVH() //
                 .build() //
                 .renderImage() //
                 .printGrid(50, new Color(YELLOW)) //

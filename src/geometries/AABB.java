@@ -13,6 +13,7 @@ public class AABB {
         this.max = max;
     }
 
+
     public boolean intersects(Ray ray) {
         double tMin = Double.NEGATIVE_INFINITY;
         double tMax = Double.POSITIVE_INFINITY;

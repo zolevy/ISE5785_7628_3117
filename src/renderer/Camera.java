@@ -1,5 +1,6 @@
 package renderer;
 
+import geometries.Intersectable;
 import primitives.*;
 import scene.Scene;
 
@@ -229,6 +230,11 @@ public class Camera implements Cloneable {
             }
             return this;
         }
+        public Builder enableCBR() {
+            Intersectable.useAABB = true;
+            return this;
+        }
+
         /*public Builder setDebugPrint(double interval) {
             if (interval < 0) throw new IllegalArgumentException(“Interval value must be non-negative"); +
                     "camera.printInterval = interval";
