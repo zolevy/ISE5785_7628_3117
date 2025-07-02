@@ -1,5 +1,6 @@
 package renderer;
 
+import geometries.*;
 import geometries.Intersectable;
 import primitives.*;
 import scene.Scene;
@@ -85,6 +86,11 @@ public class Camera implements Cloneable {
         };
     }
 
+    /**
+     * Renders the image without using any additional threads.
+     *
+     * @return this camera instance
+     */
     public Camera renderImageNoThreads()
     {
         for (int i = 0; i < nY; ++i) {
@@ -96,7 +102,9 @@ public class Camera implements Cloneable {
     }
 
     /**
-     * Render image using multi-threading by creating and running raw threads* @return the camera object itself
+     * Render image using multi-threading by creating and running raw threads.
+     *
+     * @return the camera object itself
      */
     private Camera renderImageRawThreads() {
         var threads = new LinkedList<Thread>();
@@ -113,7 +121,9 @@ public class Camera implements Cloneable {
         return this;
     }
     /**
-     * Render image using multi-threading by creating and running raw threads* @return the camera object itself
+     * Render image using Java streams with parallelization.
+     *
+     * @return the camera object itself
      */
     public Camera renderImageStream() {
         IntStream.range(0, nY).parallel() //
@@ -222,24 +232,44 @@ public class Camera implements Cloneable {
     public static class Builder {
         final private Camera camera = new Camera();
 
+        /**
+         * Sets the number of threads used for rendering.
+         *
+         * @param threads number of threads (-2 for auto, -1 for stream, 0 for no threads, positive for thread count)
+         * @return this builder instance
+         * @throws IllegalArgumentException if threads < -2
+         */
         public Builder setMultithreading(int threads) {
-            if (threads < -2) throw new IllegalArgumentException("Multithreading must be -2 or higher");if (threads >= -1) camera.threadsCount = threads;
+            if (threads < -2) throw new IllegalArgumentException("Multithreading must be -2 or higher");
+            if (threads >= -1) camera.threadsCount = threads;
             else { // == -2
                 int cores = Runtime.getRuntime().availableProcessors() - SPARE_THREADS;
                 camera.threadsCount = cores <= 2 ? 1 : cores;
             }
             return this;
         }
+
+        /**
+         * Enables CBR optimization.
+         *
+         * @return this builder instance
+         */
         public Builder enableCBR() {
-            Intersectable.useAABB = true;
+            Intersectable.enableCBR = true;
+            Geometries.setBoundingVolumeBuilder(new CBRBoundingBoxBuilder());
             return this;
         }
 
-        /*public Builder setDebugPrint(double interval) {
-            if (interval < 0) throw new IllegalArgumentException(“Interval value must be non-negative"); +
-                    "camera.printInterval = interval";
+        /**
+         * Enables BVH optimization.
+         *
+         * @return this builder instance
+         */
+        public Builder enableBVH() {
+            Intersectable.enableBVH = true;
+            Geometries.setBoundingVolumeBuilder(new BVHBoundingBoxBuilder());
             return this;
-        }*/
+        }
 
         /**
          * Sets the location of the camera.
@@ -264,7 +294,7 @@ public class Camera implements Cloneable {
         }
 
         /**
-         * Ray tracer setter
+         * Ray tracer setter.
          *
          * @param tracer to use
          * @return builder itself - for chaining

@@ -74,8 +74,11 @@ public class Plane extends Geometry {
  * @return AABB for the plane or null if not bounded.
  */
     public AABB createBoundingBox() {
-        // Typically planes are infinite, so bounding box can be null or extremely large.
-        return null;
+        double large = 1e9; // ערך גדול סביר
+        return new AABB(
+                new Point(-large, -large, -large),
+                new Point(large, large, large)
+        );
     }
 
     /**

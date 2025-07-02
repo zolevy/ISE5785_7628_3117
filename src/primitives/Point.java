@@ -75,6 +75,22 @@ public class Point {
     }
 
     /**
+     * Returns the coordinate value for the specified axis.
+     *
+     * @param axis the axis index (0 for X, 1 for Y, 2 for Z)
+     * @return the coordinate value on the specified axis
+     * @throws IllegalArgumentException if axis is not 0, 1, or 2
+     */
+    public double getCoordinate(int axis) {
+        return switch (axis) {
+            case 0 -> getX();
+            case 1 -> getY();
+            case 2 -> getZ();
+            default -> throw new IllegalArgumentException("Axis must be 0, 1, or 2");
+        };
+    }
+
+    /**
      * Returns a string representation of the point.
      *
      * @return a string representing the point

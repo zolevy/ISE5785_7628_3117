@@ -8,6 +8,8 @@ import renderer.RayTracerType;
 import scene.Scene;
 import geometries.*;
 
+import static renderer.RayTracerType.GRID;
+
 public class BonusSceneTests {
 
     private Camera.Builder cameraBuilder = Camera.getBuilder();
@@ -268,7 +270,7 @@ public class BonusSceneTests {
         Plane basePlane = (Plane) new Plane(new Point(0.0, -140.0, 0.0), new Vector(0.0, 1.0, 0.0))
                 .setEmission(new Color(30, 30, 35))
                 .setMaterial(new Material().setKD(0.4).setKS(0.3).setShininess(60).setkR(0.2));
-        scene.geometries.add(basePlane);
+       //scene.geometries.add(basePlane);
 
         // --- ספירות ---
         for (int x = -5; x < 5; x++) {
@@ -425,7 +427,7 @@ public class BonusSceneTests {
         Geometries groupTriangles = new Geometries(allTriangles);
         Geometries groupCubes = new Geometries(allCubesTriangles);
 
-        Geometries rootGroup = new Geometries(groupSpheres, groupCylinders, groupTubes, groupTriangles, groupCubes);
+        Geometries rootGroup = new Geometries(groupSpheres, groupCylinders, groupTubes, groupTriangles, groupCubes, basePlane);
 
         scene.setGeometries(rootGroup);
 
@@ -447,6 +449,7 @@ public class BonusSceneTests {
                 .setVpDistance(250.0).setVpSize(220.0, 220.0)
                 .setResolution(900, 900)
                 .setRayTracer(scene, RayTracerType.SIMPLE)
+                .enableCBR()
                 .build();
 
         camera.renderImage().writeToImage("bigColorfulScene_manualBVH");
@@ -469,7 +472,7 @@ public class BonusSceneTests {
         Plane basePlane = (Plane) new Plane(new Point(0.0, -140.0, 0.0), new Vector(0.0, 1.0, 0.0))
                 .setEmission(new Color(30, 30, 35))
                 .setMaterial(new Material().setKD(0.4).setKS(0.3).setShininess(60).setkR(0.2));
-        scene.geometries.add(basePlane);
+        //scene.geometries.add(basePlane);
 
         // --- ספירות ---
         for (int x = -5; x < 5; x++) {
@@ -626,7 +629,7 @@ public class BonusSceneTests {
         Geometries groupTriangles = new Geometries(allTriangles);
         Geometries groupCubes = new Geometries(allCubesTriangles);
 
-        Geometries rootGroup = new Geometries(groupSpheres, groupCylinders, groupTubes, groupTriangles, groupCubes);
+        Geometries rootGroup = new Geometries(groupSpheres, groupCylinders, groupTubes, groupTriangles, groupCubes, basePlane);
 
         scene.setGeometries(rootGroup);
 
@@ -649,10 +652,43 @@ public class BonusSceneTests {
                 .setResolution(900, 900)
                 .setRayTracer(scene, RayTracerType.SIMPLE)
                 .setMultithreading(3)
+                .enableCBR()
                 .build();
 
         camera.renderImage().writeToImage("bigColorfulScene_manualBVH_MT");
     }
 
+    @Test
+    void testBigSceneWithAutoBVH() {
+        Scene scene = createBigColorfulScene();
+        baseCamera(scene)
+                .enableBVH()
+                .build()
+                .renderImage()
+                .writeToImage("bigColorfulScene_withAutoBVH");
+    }
+
+    @Test
+    void testBigSceneWithAutoBVHAndMultithreading() {
+        Scene scene = createBigColorfulScene();
+        baseCamera(scene)
+                .enableBVH()
+                .setMultithreading(3)
+                .build()
+                .renderImage()
+                .writeToImage("bigColorfulScene_withAutoBVH_and_Multithreading");
+    }
+
+        @Test
+        void testBigSceneWithAA_BVH_MT() {
+            Scene scene = createBigColorfulScene();
+            baseCamera(scene)
+                    .setRayTracer(scene, GRID)
+                    .enableBVH()
+                    .setMultithreading(3)
+                    .build()
+                    .renderImage()
+                    .writeToImage("bigColorfulSceneAA_withAutoBVH_and_Multithreading");
+        }
 
 }

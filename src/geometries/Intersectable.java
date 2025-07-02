@@ -5,44 +5,48 @@ import primitives.*;
 import java.util.List;
 
 /**
- * Interface representing an object that can be intersected by a ray.
- * Classes implementing this interface must provide a method to find intersection points with a ray.
+ * Abstract class representing an object that can be intersected by a ray.
+ * Classes extending this must provide methods to calculate intersections and bounding boxes.
  */
 public abstract class Intersectable {
-    // Static flag to enable/disable AABB optimization globally
-    public static boolean useAABB = false;
+    // Static flags to enable/disable AABB optimization globally
+    public static boolean enableBVH = false;
+    public static boolean enableCBR = false;
 
     // Cached bounding box, computed lazily
     private AABB boundingBox = null;
 
     /**
-     * Compute bounding box lazily if needed and caching it.
+     * Lazily compute and cache the bounding box if not already computed.
      */
     protected void computeBoundingBoxIfNeeded() {
-        if (useAABB && boundingBox == null) {
+        if (boundingBox == null) {
             boundingBox = createBoundingBox();
         }
     }
 
     /**
-     * Returns the cached bounding box, or computes it if needed.
-     * Returns null if useAABB is false.
+     * Returns the cached bounding box or computes it if needed.
+     * Returns null if neither CBR nor BVH optimizations are enabled.
+     * @return The bounding box or null.
      */
     public AABB getBoundingBox() {
-        if (!useAABB) return null;
+        if (!(enableCBR || enableBVH)) return null;
         computeBoundingBoxIfNeeded();
         return boundingBox;
     }
 
     /**
      * Abstract method for subclasses to implement specific bounding box calculation.
+     * @return The bounding box of the geometry.
      */
     protected abstract AABB createBoundingBox();
+
     /**
      * Finds the intersection points between a ray and the object.
      *
      * @param ray the ray to intersect with the object
-     * @return a list of intersection points, or null if there are no intersections
+     * @return a list of intersection points, or null if none
      */
     public final List<Point> findIntersections(Ray ray) {
         var list = calculateIntersections(ray);
@@ -50,98 +54,93 @@ public abstract class Intersectable {
     }
 
     /**
-     * Represents a single intersection between a ray and a geometry.
-     * Includes additional data for shading and lighting calculations.
+     * Represents a single intersection between a ray and a geometry,
+     * including data for shading and lighting.
      */
     public static class Intersection {
 
-        /** The geometry object that was intersected */
+        /** The geometry object intersected */
         public final Geometry geometry;
 
-        /** The point at which the intersection occurs */
+        /** The point of intersection */
         public final Point point;
 
         /** The material of the intersected geometry */
         public final Material material;
 
-        /** The direction of the ray at the point of intersection */
+        /** The ray direction at intersection point */
         public Vector rayDirection;
 
-        /** The normal vector at the point of intersection */
+        /** The normal vector at intersection point */
         public Vector normal;
 
-        /** Dot product between ray direction and normal (used in shading) */
+        /** Dot product between ray direction and normal (for shading) */
         public double rayDirectionDPNormal;
 
-        /** The light source involved in the shading calculation */
+        /** The light source for shading */
         public LightSource lightSource;
 
-        /** The direction from the point to the light source */
+        /** Direction from intersection point to light */
         public Vector lightDirection;
 
-        /** Dot product between light direction and normal (used in shading) */
+        /** Dot product between light direction and normal (for shading) */
         public double lightDirectionDPNormal;
 
         /**
-         * Constructs an Intersection object with the given geometry and point.
-         *
-         * @param geometry the geometry intersected
-         * @param point    the point of intersection
+         * Returns the intersection point.
+         * @return The point of intersection.
+         */
+        public Point getPoint() {
+            return this.point;
+        }
+
+        /**
+         * Constructs an Intersection with given geometry and point.
+         * @param geometry The geometry intersected
+         * @param point The point of intersection
          */
         public Intersection(Geometry geometry, Point point) {
             this.geometry = geometry;
             this.point = point;
-            if(geometry == null){
-                this.material = null;
-            } else {
-                this.material = geometry.getMaterial();
-            }
+            this.material = (geometry == null) ? null : geometry.getMaterial();
         }
 
         /**
-         * Checks if this intersection is equal to another object.
-         * Two intersections are equal if they have the same geometry and point.
-         *
-         * @param obj the object to compare
+         * Checks equality: same geometry and point.
+         * @param obj Object to compare
          * @return true if equal, false otherwise
          */
         @Override
-        public boolean equals (Object obj) {
+        public boolean equals(Object obj) {
             if (this == obj) return true;
             return (obj instanceof Intersection other) && (other.geometry == this.geometry) && this.point.equals(other.point);
         }
 
         /**
-         * Returns a string representation of the intersection.
-         *
-         * @return string representing the intersection
+         * String representation of the intersection.
+         * @return String describing the intersection
          */
         @Override
         public String toString() {
-            return String.format(geometry.toString(),point.toString());
+            return String.format(geometry.toString(), point.toString());
         }
     }
 
     /**
-     * Helper method for calculating intersections.
-     * Should be implemented in subclasses.
-     *
-     * @param ray the ray to intersect
-     * @return list of intersection data, or null if none
+     * Helper method to be implemented by subclasses for intersection calculation.
+     * @param ray The ray to intersect
+     * @return List of Intersection objects or null if none
      */
-    protected List<Intersection> calculateIntersectionsHelper(Ray ray)
-    {
+    protected List<Intersection> calculateIntersectionsHelper(Ray ray) {
         return null;
     }
 
     /**
-     * Returns the list of full intersection data (geometry + point).
-     *
-     * @param ray the ray to test for intersections
-     * @return list of intersection objects or null
+     * Returns list of intersections for the given ray.
+     * @param ray The ray to test intersections
+     * @return List of Intersection objects or null
      */
-    public final List<Intersection> calculateIntersections(Ray ray)
-    {
+    public final List<Intersection> calculateIntersections(Ray ray) {
         return calculateIntersectionsHelper(ray);
     }
 }

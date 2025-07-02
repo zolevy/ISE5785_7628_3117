@@ -1,19 +1,34 @@
 package geometries;
 
-import primitives.Point;
-import primitives.Ray;
-import primitives.Util;
+import primitives.*;
 
+import java.util.List;
+
+/**
+ * Axis-Aligned Bounding Box (AABB) representing a 3D box defined by minimum and maximum points.
+ */
 public class AABB {
+    /** The minimum point (corner) of the bounding box. */
     public final Point min;
+    /** The maximum point (corner) of the bounding box. */
     public final Point max;
 
+    /**
+     * Constructs an AABB given the minimum and maximum points.
+     * @param min The minimum point of the box.
+     * @param max The maximum point of the box.
+     */
     public AABB(Point min, Point max) {
         this.min = min;
         this.max = max;
     }
 
-
+    /**
+     * Checks if the given ray intersects this bounding box.
+     * Uses the slab method for intersection testing.
+     * @param ray The ray to test for intersection.
+     * @return true if the ray intersects the bounding box, false otherwise.
+     */
     public boolean intersects(Ray ray) {
         double tMin = Double.NEGATIVE_INFINITY;
         double tMax = Double.POSITIVE_INFINITY;
@@ -88,4 +103,56 @@ public class AABB {
         return true;
     }
 
+    /**
+     * Combines two AABBs into one that encloses both.
+     * @param a The first bounding box.
+     * @param b The second bounding box.
+     * @return A new AABB that contains both input boxes.
+     */
+    public static AABB combine(AABB a, AABB b) {
+        if (a == null) return b;
+        if (b == null) return a;
+
+        Point min = new Point(
+                Math.min(a.min.getX(), b.min.getX()),
+                Math.min(a.min.getY(), b.min.getY()),
+                Math.min(a.min.getZ(), b.min.getZ())
+        );
+        Point max = new Point(
+                Math.max(a.max.getX(), b.max.getX()),
+                Math.max(a.max.getY(), b.max.getY()),
+                Math.max(a.max.getZ(), b.max.getZ())
+        );
+        return new AABB(min, max);
+    }
+
+    /**
+     * Combines the bounding boxes of all geometries into one encompassing AABB.
+     * @param geometries The list of geometries to combine.
+     * @return An AABB enclosing all geometries.
+     */
+    public static AABB combineAll(List<Intersectable> geometries) {
+        AABB result = null;
+        for (Intersectable g : geometries) {
+            g.computeBoundingBoxIfNeeded();
+            result = combine(result, g.getBoundingBox());
+        }
+        return result;
+    }
+
+    /**
+     * Gets the size vector (width, height, depth) of the bounding box.
+     * @return The size vector.
+     */
+    public Vector getSize() {
+        return max.subtract(min);
+    }
+
+    /**
+     * Gets the center point of the bounding box.
+     * @return The center point.
+     */
+    public Point getCenter() {
+        return min.add(max.subtract(min).scale(0.5));
+    }
 }

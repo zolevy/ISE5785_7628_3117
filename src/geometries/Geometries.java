@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class Geometries extends Intersectable {
 
+    private static BoundingVolumeBuilder boundingBoxBuilder = null;
+
     /**
      * A list that holds all the geometries in the composite.
      */
@@ -29,6 +31,19 @@ public class Geometries extends Intersectable {
      */
     public Geometries(Intersectable... geometries) {
         add(geometries);
+    }
+
+    /**
+     * Sets the global bounding volume builder strategy for all {@code Geometries} instances.
+     * This method allows selecting a specific algorithm (e.g., BVH or CBR) to be used when
+     * constructing bounding boxes and finding intersections.
+     * <p>
+     * This setting affects all geometries that use the static builder.
+     *
+     * @param builder the bounding volume builder to use (e.g., {@link BVHBoundingBoxBuilder}, {@link CBRBoundingBoxBuilder})
+     */
+    public static void setBoundingVolumeBuilder(BoundingVolumeBuilder builder) {
+        boundingBoxBuilder = builder;
     }
 
     /**
@@ -50,25 +65,22 @@ public class Geometries extends Intersectable {
      */
     @Override
     public List<Intersection> calculateIntersectionsHelper(Ray ray) {
-        List<Intersection> intersectionPoints = null;
-
-        for (Intersectable geometry : geoComposite) {
-            // Use bounding box check only if AABB optimization is enabled
-            AABB box = geometry.getBoundingBox();
-            if (box != null && !box.intersects(ray)) {
-                continue; // Ray doesn't hit the bounding box – skip geometry
-            }
-            List<Intersection> tempPoints = geometry.calculateIntersectionsHelper(ray);
-            if (tempPoints != null) {
-                if (intersectionPoints == null) {
-                    intersectionPoints = new LinkedList<>();
+        if (boundingBoxBuilder == null) {
+            List<Intersection> intersectionPoints = null;
+            for (Intersectable geometry : geoComposite) {
+                List<Intersection> tempPoints = geometry.calculateIntersectionsHelper(ray);
+                if (tempPoints != null) {
+                    if (intersectionPoints == null) {
+                        intersectionPoints = new LinkedList<>();
+                    }
+                    intersectionPoints.addAll(tempPoints);
                 }
-                intersectionPoints.addAll(tempPoints);
             }
+            return intersectionPoints;
+        } else {
+            return boundingBoxBuilder.findIntersections(ray, geoComposite);
         }
-        return intersectionPoints;
     }
-
 
     /**
      * Creates the axis-aligned bounding box (AABB) that contains all bounding boxes of
@@ -77,42 +89,8 @@ public class Geometries extends Intersectable {
      * @return AABB enclosing all geometries or null if none have bounding boxes.
      */
     @Override
-    public AABB createBoundingBox() {
-        if (geoComposite.isEmpty()) {
-            return null;
-        }
-
-        double minX = Double.POSITIVE_INFINITY;
-        double minY = Double.POSITIVE_INFINITY;
-        double minZ = Double.POSITIVE_INFINITY;
-
-        double maxX = Double.NEGATIVE_INFINITY;
-        double maxY = Double.NEGATIVE_INFINITY;
-        double maxZ = Double.NEGATIVE_INFINITY;
-
-        for (Intersectable geometry : geoComposite) {
-            AABB box = geometry.createBoundingBox();
-            if (box == null) continue;
-
-            Point bMin = box.min;
-            Point bMax = box.max;
-
-            if (bMin.getX() < minX) minX = bMin.getX();
-            if (bMin.getY() < minY) minY = bMin.getY();
-            if (bMin.getZ() < minZ) minZ = bMin.getZ();
-
-            if (bMax.getX() > maxX) maxX = bMax.getX();
-            if (bMax.getY() > maxY) maxY = bMax.getY();
-            if (bMax.getZ() > maxZ) maxZ = bMax.getZ();
-        }
-
-        if (minX == Double.POSITIVE_INFINITY) {
-            return null;
-        }
-
-        Point min = new Point(minX, minY, minZ);
-        Point max = new Point(maxX, maxY, maxZ);
-
-        return new AABB(min, max);
+    protected AABB createBoundingBox() {
+        return boundingBoxBuilder.createBoundingBox(geoComposite);
     }
+
 }

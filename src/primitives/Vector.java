@@ -9,6 +9,7 @@ public class Vector extends Point {
     public static final Vector AXIS_X = new Vector(1.0, 0.0, 0.0);
     public static final Vector AXIS_Y = new Vector(0.0, 1.0, 0.0);
     public static final Vector AXIS_Z = new Vector(0.0, 0.0, 1.0);
+
     /**
      * Constructs a vector with the specified x, y, and z coordinates.
      * Throws an exception if the vector is the zero vector (0,0,0).
@@ -22,6 +23,7 @@ public class Vector extends Point {
         if (xyz.equals(Double3.ZERO))
             throw new IllegalArgumentException("Zero vector is not allowed");
     }
+
     /**
      * Constructs a vector from a Double3 object.
      * Throws an exception if the vector is the zero vector (0,0,0).
@@ -33,6 +35,19 @@ public class Vector extends Point {
         if (values.equals(Double3.ZERO)) {
             throw new IllegalArgumentException("Vector cannot be created from Point(0,0,0)");
         }
+    }
+
+    /**
+     * Returns the index of the axis with the largest coordinate value.
+     *
+     * @return 0 for X axis, 1 for Y axis, or 2 for Z axis
+     */
+    public int getMaxAxisIndex() {
+        double x = getX(), y = getY(), z = getZ();
+
+        if (x >= y && x >= z) return 0;
+        if (y >= x && y >= z) return 1;
+        return 2;
     }
 
     /**
@@ -112,10 +127,10 @@ public class Vector extends Point {
      *
      * @param vector the other vector
      * @return the cross product of the two vectors
+     * @throws IllegalArgumentException if the cross product results in the zero vector
      */
     public Vector crossProduct(Vector vector) {
-        if (this.equals(vector))
-        {
+        if (this.equals(vector)) {
             throw new IllegalArgumentException("crossProduct resulted in zero vector");
         }
         return new Vector(

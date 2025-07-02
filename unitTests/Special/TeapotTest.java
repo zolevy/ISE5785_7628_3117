@@ -41,7 +41,7 @@ class TeapotTest {
     @Test
     @Disabled
     void testTeapot2() {
-        for (int i = 10; i > 0; --i) {
+        for (int i = 3; i > 0; --i) {
             teapot2();
         }
     }
@@ -52,7 +52,7 @@ class TeapotTest {
     @Test
     @Disabled
     void testTeapot3() {
-        for (int i = 100; i > 0; --i) {
+        for (int i = 3; i > 0; --i) {
             teapot3();
         }
     }
@@ -74,7 +74,7 @@ class TeapotTest {
      */
     void teapot3() {
         prepareTeapot() //
-                //.enableBVH() //
+                .enableBVH() //
                 .build() //
                 .renderImage() //
                 .printGrid(50, new Color(YELLOW)) //

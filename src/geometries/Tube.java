@@ -34,8 +34,11 @@ public class Tube extends RadialGeometry {
     */
     @Override
     public AABB createBoundingBox() {
-        // Tube is infinite along its axis; no finite bounding box.
-        return null;
+        double large = 1e9;
+        return new AABB(
+                new Point(-large, -large, -large),
+                new Point(large, large, large)
+        );
     }
 
     /**
